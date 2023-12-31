@@ -47,11 +47,11 @@ export async function getSheets() {
 export async function getSheetData() {
   const sheets = await getSheets();
 
-  const { data } = await sheets.spreadsheets.values.get({
+  const result = await sheets?.spreadsheets?.values?.get({
     auth: getAuth(),
     spreadsheetId: process.env.SPREADSHEET_ID,
     range: "Estatísticas!C3:E25"
   });
 
-  return data?.values || [];
+  return result?.data?.values || [];
 }
