@@ -4,7 +4,7 @@ import styles from "../styles/Home.module.css";
 import RankingBadge from "../components/rankingBadge";
 
 const titulo = "Poker Shark";
-const descricao = "Pulseiras incríveis nas cores rosa, verde água e roxo.";
+const descricao = "O poker mais sanguinário do Grand Splendor";
 const imagemPrincipal = "/poker-shark-bg.jpeg";
 
 export default function Home() {
