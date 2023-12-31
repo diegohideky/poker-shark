@@ -1,0 +1,46 @@
+
+/* styles/globals.css */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Personalizações adicionais podem ser feitas aqui */
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* img {
+  max-width: 100%;
+  height: auto;
+} */
+
+main {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #043832, #076157);
+}
