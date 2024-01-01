@@ -21,7 +21,8 @@ export async function getSheetData() {
   console.log({ credentials });
   
   const auth = new google.auth.GoogleAuth({
-    credentials,
+    keyFile: "./credentials/sheets.json",
+    // credentials,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 
