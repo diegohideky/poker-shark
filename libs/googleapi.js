@@ -15,7 +15,7 @@ export async function getSheetData() {
   const credentials = {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
     client_id: process.env.GOOGLE_CLIENT_ID,
-    private_key: process.env.GOOGLE_PRIVATE_KEY,
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace('"', ""),
   }
 
   console.log({ credentials });
