@@ -41,9 +41,9 @@ export default function Home() {
         <meta property="og:description" content={descricao} />
         <meta
           property="og:image"
-          content={`https://${domain}${imagemPrincipal}`}
+          content={`https://${domain}/${imagemPrincipal}`}
         />
-        <meta property="og:url" content="https://${domain}/" />
+        <meta property="og:url" content={`https://${domain}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={titulo} />
         <meta property="og:locale" content="pt_BR" />
@@ -51,7 +51,7 @@ export default function Home() {
         <meta name="twitter:description" content={descricao} />
         <meta
           name="twitter:image"
-          content={`https://${domain}${imagemPrincipal}`}
+          content={`https://${domain}/${imagemPrincipal}`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@loja-por-do-sol" />
@@ -61,7 +61,7 @@ export default function Home() {
         <meta itemProp="description" content={descricao} />
         <meta
           itemProp="image"
-          content={`https://${domain}${imagemPrincipal}`}
+          content={`https://${domain}/${imagemPrincipal}`}
         />
       </Head>
 
