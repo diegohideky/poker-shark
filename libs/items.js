@@ -1,82 +1,71 @@
-export const ITEMS = [
-  {
-    id: 1,
-    titulo: 'Pulseira',
-    cor: 'Rosa',
-    tamanho: 'M',
-    preco: 25.00,
-    imagem: '/pulseira_001.jpeg'
+export const PLAYERS = {
+  'Ademir': {
+    image: '/players/Ademir.png'
   },
-  {
-    id: 2,
-    titulo: 'Pulseira',
-    cor: 'Verde-Água',
-    tamanho: 'P',
-    preco: 30.00,
-    imagem: '/pulseira_002.jpeg'
+  'Allan': {
+    image: '/players/Allan.png'
   },
-  {
-    id: 3,
-    titulo: 'Pulseira',
-    cor: 'Roxa',
-    tamanho: 'G',
-    preco: 35.00,
-    imagem: '/pulseira_003.jpeg'
+  'Arnaldo': {
+    image: '/players/Arnaldo.png'
   },
-  {
-    id: 4,
-    titulo: 'Pulseira',
-    cor: 'Rosa',
-    tamanho: 'P',
-    preco: 30.00,
-    imagem: '/pulseira_004.jpeg'
+  'Bruno': {
+    image: '/players/Bruno.png'
   },
-  {
-    id: 5,
-    titulo: 'Pulseira',
-    cor: 'Verde-Água',
-    tamanho: 'M',
-    preco: 35.00,
-    imagem: '/pulseira_005.jpeg'
+  'Demori': {
+    image: '/players/Demori.png'
   },
-  {
-    id: 6,
-    titulo: 'Pulseira',
-    cor: 'Roxo',
-    tamanho: 'P',
-    preco: 30.00,
-    imagem: '/pulseira_001.jpeg'
+  'Diego': {
+    image: '/players/Diego.png'
   },
-  {
-    id: 7,
-    titulo: 'Pulseira',
-    cor: 'Rosa',
-    tamanho: 'G',
-    preco: 35.00,
-    imagem: '/pulseira_002.jpeg'
+  'Eder': {
+    image: '/players/Eder.png'
   },
-  {
-    id: 8,
-    titulo: 'Pulseira',
-    cor: 'Verde-Água',
-    tamanho: 'M',
-    preco: 30.00,
-    imagem: '/pulseira_003.jpeg'
+  'Erik': {
+    image: '/players/Erik.png'
   },
-  {
-    id: 9,
-    titulo: 'Pulseira',
-    cor: 'Roxo',
-    tamanho: 'P',
-    preco: 25.00,
-    imagem: '/pulseira_004.jpeg'
+  'Felipe': {
+    image: '/players/Felipe.png'
   },
-  {
-    id: 10,
-    titulo: 'Pulseira',
-    cor: 'Rosa',
-    tamanho: 'G',
-    preco: 35.00,
-    imagem: '/pulseira_005.jpeg'
-  }
-]
+  'Gilson': {
+    image: '/players/Gilson.png'
+  },
+  'Glauco': {
+    image: '/players/Glauco.png'
+  },
+  'Gustavo': {
+    image: '/players/Gustavo.png'
+  },
+  'Leonardo': {
+    image: '/players/Leonardo.png'
+  },
+  'Luiz': {
+    image: '/players/Luiz.png'
+  },
+  'Marcio': {
+    image: '/players/Marcio.png'
+  },
+  'Marco': {
+    image: '/players/Marco.png'
+  },
+  'Rafael': {
+    image: '/players/Rafael.png'
+  },
+  'Reinaldo': {
+    image: '/players/Reinaldo.png'
+  },
+  'Rodolfo': {
+    image: '/players/Rodolfo.png'
+  },
+  'Vianna': {
+    image: '/players/Vianna.png'
+  },
+  'Vinicius': {
+    image: '/players/Vinicius.png'
+  },
+  'Waldeir': {
+    image: '/players/Waldeir.png'
+  },
+  'Wilker': {
+    image: '/players/Wilker.png'
+  }, 
+}

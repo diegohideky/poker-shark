@@ -15,7 +15,9 @@ export default async function handler(req, res) {
 
     const data = values.reduce((acc, curr) => {
       const [name, score, matches] = curr;
-      const rawScore = +score.replace("R$ ", "");
+      const rawScore = +score.replace("R$ ", "").replace(',', '.');
+
+      if (!+matches) return acc;
 
       acc.push({
         name,

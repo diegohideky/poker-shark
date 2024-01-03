@@ -21,25 +21,18 @@ export async function getSheetData() {
   console.log({ credentials });
   
   const auth = new google.auth.GoogleAuth({
-    // keyFile: "./credentials/sheets.json",
     credentials,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 
-  console.log({ auth });
-
   const client = await auth.getClient();
 
-  console.log({ client });
-
   const sheets = await google.sheets({ version: "v4", auth: client });
-
-  console.log({ sheets });
 
   const result = await sheets.spreadsheets?.values?.get({
     auth,
     spreadsheetId: process.env.SPREADSHEET_ID,
-    range: "Estatísticas!C3:E25"
+    range: "RankingA!C3:E25"
   });
 
   console.log({ result });

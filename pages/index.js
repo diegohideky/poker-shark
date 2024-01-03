@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import RankingBadge from "../components/rankingBadge";
+import { PLAYERS } from "../libs/items";
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
@@ -28,7 +29,7 @@ export default function Home() {
       return "text-red-500";
     }
 
-    return "text-black";
+    return "text-white";
   };
 
   return (
@@ -111,7 +112,7 @@ export default function Home() {
                     <div className="flex flex-row items-center justify-center gap-4 relative">
                       <img
                         className="w-40 h-40 relative md:ml-5"
-                        src={`/players/${item.name}.png`}
+                        src={PLAYERS[item.name] ? PLAYERS[item.name].image : '/players/Default.png'}
                         alt="Poker Shark"
                       />
                       <RankingBadge
