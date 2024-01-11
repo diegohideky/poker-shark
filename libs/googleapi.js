@@ -18,6 +18,8 @@ export async function getSheetData() {
     private_key: process.env.GOOGLE_PRIVATE_KEY?.split(String.raw`\n`).join('\n'),
   }
 
+  console.log({ credentials });
+  
   const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
@@ -32,6 +34,8 @@ export async function getSheetData() {
     spreadsheetId: process.env.SPREADSHEET_ID,
     range: "RankingA!C3:E25"
   });
+
+  console.log({ result });
 
   return result?.data?.values || [];
 }

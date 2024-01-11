@@ -32,17 +32,6 @@ export default function Home() {
     return "text-white";
   };
 
-  // splice item where name is Diego
-  const index = ranking.findIndex((item) => item.name === "Diego");
-
-  let diego = null;
-
-  if (index > -1) {
-    diego = ranking.splice(index, 1)[0];
-    // now add diego on the top of the list
-    ranking.unshift(diego);
-  }
-
   return (
     <div>
       <Head>
@@ -116,46 +105,34 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center">
               <div className="flex flex-col items-center justify-center gap-8">
                 {ranking.map((item, index) => (
-                  <>
-                    <div
-                      key={index}
-                      className="flex flex-row items-center justify-center gap-5"
-                    >
-                      <div className="flex flex-row items-center justify-center gap-4 relative">
-                        <img
-                          className="w-40 h-40 relative md:ml-5"
-                          src={PLAYERS[item.name] ? PLAYERS[item.name].image : '/players/Default.png'}
-                          alt="Poker Shark"
-                        />
-                        <RankingBadge
-                          position={index + 1}
-                          className="absolute bottom-0 left-0"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <h1 className="text-1xl md:text-2xl font-bold text-white">
-                          {item.name}
-                        </h1>
-                        <h1
-                          className={`text-1xl md:text-2xl font-bold ${getTextColor(
-                            item.score
-                          )}`}
-                        >
-                          {item.formattedScore}
-                        </h1>
-                      </div>
+                  <div
+                    key={index}
+                    className="flex flex-row items-center justify-center gap-5"
+                  >
+                    <div className="flex flex-row items-center justify-center gap-4 relative">
+                      <img
+                        className="w-40 h-40 relative md:ml-5"
+                        src={PLAYERS[item.name] ? PLAYERS[item.name].image : '/players/Default.png'}
+                        alt="Poker Shark"
+                      />
+                      <RankingBadge
+                        position={index + 1}
+                        className="absolute bottom-0 left-0"
+                      />
                     </div>
-                    {index === 0 && (
-                      <div
-                        key={index}
-                        className="flex flex-row items-center justify-center gap-5"
+                    <div className="flex flex-col">
+                      <h1 className="text-1xl md:text-2xl font-bold text-white">
+                        {item.name}
+                      </h1>
+                      <h1
+                        className={`text-1xl md:text-2xl font-bold ${getTextColor(
+                          item.score
+                        )}`}
                       >
-                        <h1 className="text-1xl md:text-2xl font-bold text-white">
-                          TA VENDO AGORA SEU CAGA TRONCO DO CARALHO??
-                        </h1>
-                      </div>
-                    )}
-                  </>
+                        {item.formattedScore}
+                      </h1>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
