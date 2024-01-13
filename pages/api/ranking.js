@@ -41,13 +41,13 @@ export default async function handler(req, res) {
 
     currentRanking.forEach((ranking, index) => {
       ranking.position = index + 1;
-      const lastRankingItem = lastRanking.find(item => item.name === ranking.name);
+      const lastRankingIndex = lastRanking.findIndex(item => item.name === ranking.name);
 
-      if (lastRankingItem?.score === null || lastRankingItem?.score === undefined) {
+      if (lastRankingIndex === -1) {
         ranking.status = 'same';
-      } else if (lastRankingItem.score < ranking.score) {
+      } else if (lastRankingIndex > index) {
         ranking.status = 'up';
-      } else if (lastRankingItem.score > ranking.score) {
+      } else if (lastRankingIndex < index) {
         ranking.status = 'down';
       } else {
         ranking.status = 'same';
