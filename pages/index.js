@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
+import { HiMinusCircle } from "react-icons/hi2";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import RankingBadge from "../components/rankingBadge";
 import { PLAYERS } from "../libs/items";
+
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
@@ -11,13 +14,17 @@ const domain = 'poker-shark.vercel.app'
 
 export default function Home() {
   const [ranking, setRanking] = useState([]);
+  const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     fetch("/api/ranking")
       .then((res) => res.json())
-      .then((data) => setRanking(data))
+      .then((data) => {
+        setRanking(data)
+        setFilteredRanking(data)
+      })
       .catch((err) => console.log({ err }))
       .finally(() => setLoading(false));
   }, []);
@@ -31,6 +38,18 @@ export default function Home() {
 
     return "text-white";
   };
+
+  const onSearch = (event) => {
+    const { value } = event.target;
+
+    if (!value) return setFilteredRanking(ranking);
+
+    const filtered = ranking.filter((item) =>
+      item.name.toLowerCase().includes(value.trim().toLowerCase())
+    );
+
+    setFilteredRanking(filtered);
+  }
 
   return (
     <div>
@@ -78,12 +97,24 @@ export default function Home() {
           </div>
         </section>
 
+        <section>
+          {/* add an input search using tailwind */}
+          <div className="flex flex-row items-center justify-center p-5 md:p-10 w-full">
+              <input
+                className="w-full md:w-[350px] h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                type="text"
+                placeholder="Digite o nome do caga tronco"
+                onChange={onSearch}
+            />
+          </div>
+        </section>
+
         {loading ? (
           <section className="flex flex-row items-center justify-center p-10 md: p-20">
             <div role="status">
               <svg
                 aria-hidden="true"
-                class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -97,17 +128,17 @@ export default function Home() {
                   fill="currentFill"
                 />
               </svg>
-              <span class="sr-only">Loading...</span>
+              <span className="sr-only">Loading...</span>
             </div>
           </section>
         ) : (
-          <section className="flex flex-row items-center justify-center p-5 md:p-20">
+          <section className="flex flex-row items-center justify-center p-5">
             <div className="flex flex-col items-center justify-center">
               <div className="flex flex-col items-center justify-center gap-8">
-                {ranking.map((item, index) => (
+                {filteredRanking.map((item, index) => (
                   <div
                     key={index}
-                    className="flex flex-row items-center justify-center gap-5"
+                    className="flex flex-row items-center gap-5 w-full"
                   >
                     <div className="flex flex-row items-center justify-center gap-4 relative">
                       <img
@@ -116,14 +147,25 @@ export default function Home() {
                         alt="Poker Shark"
                       />
                       <RankingBadge
-                        position={index + 1}
+                        position={item.position}
                         className="absolute bottom-0 left-0"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <h1 className="text-1xl md:text-2xl font-bold text-white">
-                        {item.name}
-                      </h1>
+                      <div className="flex flex-row items-center gap-2">
+                        {item.status === "up" && (
+                          <BsArrowUpCircleFill color="#22c55e" />
+                        )}
+                        {item.status === "down" && (
+                          <BsArrowDownCircleFill color="#ef4444" />
+                        )}
+                        {item.status === "same" && (
+                          <HiMinusCircle color="#ffffff" />
+                        )}
+                        <h1 className="text-1xl md:text-2xl font-bold text-white">
+                          {item.name}
+                        </h1>
+                      </div>
                       <h1
                         className={`text-1xl md:text-2xl font-bold ${getTextColor(
                           item.score

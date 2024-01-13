@@ -11,7 +11,7 @@ export async function getSheets() {
   return googleSheets;
 }
 
-export async function getSheetData() {
+export async function getSheetData(range) {
   const credentials = {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
     client_id: process.env.GOOGLE_CLIENT_ID,
@@ -30,7 +30,7 @@ export async function getSheetData() {
   const result = await sheets.spreadsheets?.values?.get({
     auth,
     spreadsheetId: process.env.SPREADSHEET_ID,
-    range: "RankingA!C3:E25"
+    range
   });
 
   return result?.data?.values || [];
