@@ -33,8 +33,8 @@ function parseRanking (values) {
 
 export default async function handler(req, res) {
   try {
-    const currentValues = await googleApi.getSheetData('RankingA!C3:E25');
-    const lastValues = await googleApi.getSheetData('RankingB!C3:E25');
+    const currentValues = await googleApi.getSheetData('RankingA!C3:E26');
+    const lastValues = await googleApi.getSheetData('RankingB!C3:E26');
 
     const currentRanking = parseRanking(currentValues);
     const lastRanking = parseRanking(lastValues);
