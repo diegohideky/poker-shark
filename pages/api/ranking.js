@@ -43,6 +43,8 @@ export default async function handler(req, res) {
       ranking.position = index + 1;
       const lastRankingIndex = lastRanking.findIndex(item => item.name === ranking.name);
 
+      ranking.positionDiff = Math.abs((lastRankingIndex + 1) - ranking.position);
+
       if (lastRankingIndex === -1) {
         ranking.status = 'same';
       } else if (lastRankingIndex > index) {

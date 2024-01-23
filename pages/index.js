@@ -154,10 +154,16 @@ export default function Home() {
                     <div className="flex flex-col">
                       <div className="flex flex-row items-center gap-2">
                         {item.status === "up" && (
-                          <BsArrowUpCircleFill color="#22c55e" />
+                          <>
+                            <BsArrowUpCircleFill color="#22c55e" />
+                            <h4 className="text-[#22c55e]">{item.positionDiff}</h4>
+                          </>
                         )}
                         {item.status === "down" && (
-                          <BsArrowDownCircleFill color="#ef4444" />
+                          <>
+                            <BsArrowDownCircleFill color="#ef4444" />
+                            <h4 className="text-[#ef4444]">{item.positionDiff}</h4>
+                          </>
                         )}
                         {item.status === "same" && (
                           <HiMinusCircle color="#ffffff" />
