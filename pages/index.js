@@ -172,13 +172,25 @@ export default function Home() {
                           {item.name}
                         </h1>
                       </div>
-                      <h1
-                        className={`text-1xl md:text-2xl font-bold ${getTextColor(
-                          item.score
-                        )}`}
-                      >
-                        {item.formattedScore}
-                      </h1>
+                      {
+                        item.name === 'Vianna'
+                        ? (
+                          <>
+                            <small className="text-[#ef4444] max-w-[150px]">!Erro: nao foi possivel</small>
+                            <small className="text-[#ef4444] max-w-[150px]">carregar essa quantia</small>
+                            <small className="text-[#ef4444] max-w-[150px]">de dinheiro...</small>
+                          </>
+                        )
+                        : (
+                          <h1
+                            className={`text-1xl md:text-2xl font-bold ${getTextColor(
+                              item.score
+                            )}`}
+                          >
+                            {item.formattedScore}
+                          </h1>
+                        )
+                      }
                     </div>
                   </div>
                 ))}
