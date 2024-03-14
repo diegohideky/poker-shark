@@ -12,7 +12,7 @@ const formatMoney = (number) => {
 function parseRanking (values) {
   const data = values.reduce((acc, curr) => {
     const [name, score, matches] = curr;
-    const rawScore = +score.replace("R$ ", "").replace(',', '.');
+    const rawScore = +score.replace("R$ ", "").replace(',', '');
 
     if (!+matches) return acc;
 
