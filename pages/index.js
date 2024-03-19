@@ -11,6 +11,8 @@ const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
 const imagemPrincipal = "/poker-shark-bg.jpeg";
 const domain = 'poker-shark.vercel.app'
+const addsId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
+
 
 export default function Home() {
   const [ranking, setRanking] = useState([]);
@@ -83,6 +85,7 @@ export default function Home() {
           itemProp="image"
           content={`https://${domain}/${imagemPrincipal}`}
         />
+        <script async src={addsId} crossorigin="anonymous"></script>
       </Head>
 
       <main>
