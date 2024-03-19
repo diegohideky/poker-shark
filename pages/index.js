@@ -239,6 +239,25 @@ export default function Home() {
           </section>
         )}
       </main>
+
+      <Script
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7385654632311141"
+        crossorigin="anonymous"
+        strategy="afterInteractive"
+      />
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-client="ca-pub-7385654632311141"
+        data-ad-slot="5036828311"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <Script strategy="afterInteractive">
+        {`
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                `}
+      </Script>
     </div>
   );
 }
