@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Script from "next/script";
 import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
 import Head from "next/head";
@@ -6,13 +7,11 @@ import styles from "../styles/Home.module.css";
 import RankingBadge from "../components/rankingBadge";
 import { PLAYERS } from "../libs/items";
 
-
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
 const imagemPrincipal = "/poker-shark-bg.jpeg";
-const domain = 'poker-shark.vercel.app'
+const domain = "poker-shark.vercel.app";
 const addsId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
-
 
 export default function Home() {
   const [ranking, setRanking] = useState([]);
@@ -24,8 +23,8 @@ export default function Home() {
     fetch("/api/ranking")
       .then((res) => res.json())
       .then((data) => {
-        setRanking(data)
-        setFilteredRanking(data)
+        setRanking(data);
+        setFilteredRanking(data);
       })
       .catch((err) => console.log({ err }))
       .finally(() => setLoading(false));
@@ -51,7 +50,7 @@ export default function Home() {
     );
 
     setFilteredRanking(filtered);
-  }
+  };
 
   return (
     <div>
@@ -85,7 +84,49 @@ export default function Home() {
           itemProp="image"
           content={`https://${domain}/${imagemPrincipal}`}
         />
-        <script async src={addsId} crossorigin="anonymous"></script>
+        {/* <script async src={addsId} crossorigin="anonymous"></script> */}
+        <Script
+          async
+          src={addsId}
+          strategy="beforeInteractive"
+          crossOrigin="anonymous"
+        />
+        {/* <script
+          async
+          src="https://fundingchoicesmessages.google.com/i/pub-7385654632311141?ers=1"
+          nonce="cn-c7BvDYD7vna5ZCo66zg"
+        ></script> */}
+
+        <Script
+          async
+          src="https://fundingchoicesmessages.google.com/i/pub-7385654632311141?ers=1"
+          strategy="afterInteractive"
+          nonce="cn-c7BvDYD7vna5ZCo66zg"
+        />
+
+        <Script
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                  function signalGooglefcPresent() {
+                      if (!window.frames['googlefcPresent']) {
+                          if (document.body) {
+                              const iframe = document.createElement('iframe');
+                              iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
+                              iframe.style.display = 'none';
+                              iframe.name = 'googlefcPresent';
+                              document.body.appendChild(iframe);
+                          } else {
+                              setTimeout(signalGooglefcPresent, 0);
+                          }
+                      }
+                  }
+                  signalGooglefcPresent();
+              })();
+          `,
+          }}
+        />
       </Head>
 
       <main>
@@ -103,11 +144,11 @@ export default function Home() {
         <section>
           {/* add an input search using tailwind */}
           <div className="flex flex-row items-center justify-center p-5 md:p-10 w-full">
-              <input
-                className="w-full md:w-[350px] h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-                type="text"
-                placeholder="Digite o nome do caga tronco"
-                onChange={onSearch}
+            <input
+              className="w-full md:w-[350px] h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+              type="text"
+              placeholder="Digite o nome do caga tronco"
+              onChange={onSearch}
             />
           </div>
         </section>
@@ -146,7 +187,11 @@ export default function Home() {
                     <div className="flex flex-row items-center justify-center gap-4 relative">
                       <img
                         className="w-40 h-40 relative md:ml-5"
-                        src={PLAYERS[item.name] ? PLAYERS[item.name].image : '/players/Default.png'}
+                        src={
+                          PLAYERS[item.name]
+                            ? PLAYERS[item.name].image
+                            : "/players/Default.png"
+                        }
                         alt="Poker Shark"
                       />
                       <RankingBadge
@@ -159,13 +204,17 @@ export default function Home() {
                         {item.status === "up" && (
                           <>
                             <BsArrowUpCircleFill color="#22c55e" />
-                            <h4 className="text-[#22c55e]">{item.positionDiff}</h4>
+                            <h4 className="text-[#22c55e]">
+                              {item.positionDiff}
+                            </h4>
                           </>
                         )}
                         {item.status === "down" && (
                           <>
                             <BsArrowDownCircleFill color="#ef4444" />
-                            <h4 className="text-[#ef4444]">{item.positionDiff}</h4>
+                            <h4 className="text-[#ef4444]">
+                              {item.positionDiff}
+                            </h4>
                           </>
                         )}
                         {item.status === "same" && (
