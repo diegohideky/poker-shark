@@ -253,10 +253,21 @@ export default function Home() {
         data-ad-format="auto"
         data-full-width-responsive="true"
       />
+      <Script
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7385654632311141"
+        crossorigin="anonymous"
+        strategy="afterInteractive"
+      />
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-format="fluid"
+        data-ad-layout-key="-fg+1l-5v-mo+1qv"
+        data-ad-client="ca-pub-7385654632311141"
+        data-ad-slot="8784501639"
+      />
       <Script strategy="afterInteractive">
-        {`
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                `}
+        {`(adsbygoogle = window.adsbygoogle || []).push({});`}
       </Script>
     </div>
   );
