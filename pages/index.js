@@ -85,19 +85,19 @@ export default function Home() {
           content={`https://${domain}/${imagemPrincipal}`}
         />
         {/* <script async src={addsId} crossorigin="anonymous"></script> */}
-        <Script
+        {/* <Script
           async
           src={addsId}
           strategy="beforeInteractive"
           crossOrigin="anonymous"
-        />
+        /> */}
         {/* <script
           async
           src="https://fundingchoicesmessages.google.com/i/pub-7385654632311141?ers=1"
           nonce="cn-c7BvDYD7vna5ZCo66zg"
         ></script> */}
 
-        <Script
+        {/* <Script
           async
           src="https://fundingchoicesmessages.google.com/i/pub-7385654632311141?ers=1"
           strategy="afterInteractive"
@@ -126,7 +126,7 @@ export default function Home() {
               })();
           `,
           }}
-        />
+        /> */}
       </Head>
 
       <main>
@@ -240,7 +240,7 @@ export default function Home() {
         )}
       </main>
 
-      <Script
+      {/* <Script
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7385654632311141"
         crossorigin="anonymous"
         strategy="afterInteractive"
@@ -268,7 +268,7 @@ export default function Home() {
       />
       <Script strategy="afterInteractive">
         {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-      </Script>
+      </Script> */}
     </div>
   );
 }
