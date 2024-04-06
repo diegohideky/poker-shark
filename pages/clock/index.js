@@ -7,8 +7,9 @@ import { FaRegClock } from "react-icons/fa6";
 import { BLINDS } from "../../libs/items";
 import styles from "../../styles/Home.module.css";
 
-const titulo = "Poker Shark";
-const descricao = "O poker mais sanguinário do Grand Splendor";
+const titulo = "Poker Shark's Clock";
+const descricao =
+  "Configure seus blinds para o seu torneio e comece a chacina NHAC!!!";
 const imagemPrincipal = "/poker-shark-bg.jpeg";
 const domain = "poker-shark.vercel.app";
 
@@ -207,7 +208,7 @@ export default function Home() {
           <div
             className={`${styles.bannerContent} ${styles.title} flex items-center justify-center`}
           >
-            Poker Shark
+            Poker Shark's Clock
           </div>
         </section>
         <section>
