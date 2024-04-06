@@ -1,77 +1,92 @@
-export const PLAYERS = {
-  'Ademir': {
-    image: '/players/Ademir.png'
+export const BLINDS = [
+  {
+    small: 25,
+    big: 50,
+    duration: 10,
   },
-  'Allan': {
-    image: '/players/Allan.png'
+  {
+    small: 50,
+    big: 100,
+    duration: 10,
   },
-  'Arnaldo': {
-    image: '/players/Arnaldo.png'
+  {
+    small: 100,
+    big: 200,
+    duration: 10,
   },
-  'Bruno': {
-    image: '/players/Bruno.png'
+  {
+    small: 150,
+    big: 300,
+    duration: 10,
   },
-  'Demori': {
-    image: '/players/Demori.png'
+  {
+    small: 200,
+    big: 400,
+    duration: 10,
   },
-  'Diego': {
-    image: '/players/Diego.png'
+  {
+    small: 250,
+    big: 500,
+    duration: 10,
   },
-  'Eder': {
-    image: '/players/Eder.png'
+  {
+    small: 300,
+    big: 600,
+    duration: 10,
   },
-  'Erik': {
-    image: '/players/Erik.png'
+  {
+    small: 400,
+    big: 800,
+    duration: 10,
   },
-  'Felipe': {
-    image: '/players/Felipe.png'
+  {
+    small: 500,
+    big: 1000,
+    duration: 10,
   },
-  'Gilson': {
-    image: '/players/Gilson.png'
+  {
+    small: 600,
+    big: 1200,
+    duration: 10,
   },
-  'Giu': {
-    image: '/players/Giu.png'
+  {
+    small: 800,
+    big: 1600,
+    duration: 10,
   },
-  'Glauco': {
-    image: '/players/Glauco.png'
+  {
+    small: 1000,
+    big: 2000,
+    duration: 10,
   },
-  'Gustavo': {
-    image: '/players/Gustavo.png'
+  {
+    small: 1200,
+    big: 2400,
+    duration: 10,
   },
-  'Leonardo': {
-    image: '/players/Leonardo.png'
+  {
+    small: 1500,
+    big: 3000,
+    duration: 10,
   },
-  'Luiz': {
-    image: '/players/Luiz.png'
+  {
+    small: 2000,
+    big: 4000,
+    duration: 10,
   },
-  'Marcio': {
-    image: '/players/Marcio.png'
+  {
+    small: 2500,
+    big: 5000,
+    duration: 10,
   },
-  'Marco': {
-    image: '/players/Marco.png'
+  {
+    small: 3000,
+    big: 6000,
+    duration: 10,
   },
-  'Marquinho': {
-    image: '/players/Marquinho.png'
+  {
+    small: 4000,
+    big: 8000,
+    duration: 10,
   },
-  'Rafael': {
-    image: '/players/Rafael.png'
-  },
-  'Reinaldo': {
-    image: '/players/Reinaldo.png'
-  },
-  'Rodolfo': {
-    image: '/players/Rodolfo.png'
-  },
-  'Vianna': {
-    image: '/players/Vianna.png'
-  },
-  'Vinicius': {
-    image: '/players/Vinicius.png'
-  },
-  'Waldeir': {
-    image: '/players/Waldeir.png'
-  },
-  'Wilker': {
-    image: '/players/Wilker.png'
-  }, 
-}
+];
