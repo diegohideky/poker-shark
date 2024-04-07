@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { FiPause, FiPlay } from "react-icons/fi";
 import { FaArrowRotateRight, FaTrash } from "react-icons/fa6";
-import { GrCaretNext, GrCaretPrevious, GrConfigure } from "react-icons/gr";
+import { GrConfigure } from "react-icons/gr";
 import { FaRegClock } from "react-icons/fa6";
 import { LuMegaphone, LuMegaphoneOff } from "react-icons/lu";
 import { IoIosAdd } from "react-icons/io";
+import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { BLINDS } from "../../libs/items";
 import styles from "../../styles/Home.module.css";
 
@@ -410,7 +411,7 @@ export default function Home() {
                   onClick={handlePrevious}
                   disabled={currentBlindIndex === 0}
                 >
-                  <GrCaretPrevious />
+                  <MdSkipPrevious size={20} />
                 </button>
 
                 {!hasPaused ? (
@@ -418,14 +419,14 @@ export default function Home() {
                     className="flex flex-row items-center transition ease-in-out gap-2 p-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 hover:outline-none"
                     onClick={handlePause}
                   >
-                    <FiPause />
+                    <FiPause size={20} />
                   </button>
                 ) : (
                   <button
                     className="flex flex-row items-center transition ease-in-out gap-2 p-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-700 hover:outline-none"
                     onClick={handleUnpause}
                   >
-                    <FiPlay />
+                    <FiPlay size={20} />
                   </button>
                 )}
 
@@ -436,7 +437,7 @@ export default function Home() {
                   onClick={handleNext}
                   disabled={currentBlindIndex === blinds.length - 1}
                 >
-                  <GrCaretNext />
+                  <MdSkipNext size={20} />
                 </button>
               </div>
               <div className="flex flex-row gap-2 mt-7">
