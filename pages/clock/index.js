@@ -281,25 +281,29 @@ export default function Home() {
         <section>
           {!hasStarted && (
             <div className="flex flex-col items-center justify-center p-5 md:p-10 w-full gap-2">
-              <div className="flex flex-row justify-center items-center gap-2 text-white w-full">
-                <span className="w-full md:w-[50px]">Nível</span>
-                <span className="w-full md:w-[150px]">Small</span>
-                <span className="w-full md:w-[150px]">Big</span>
-                <span className="w-full md:w-[150px]">Duração (min)</span>
-                <span className="w-full md:w-[150px]">.</span>
+              <div className="flex flex-row justify-center items-center gap-2 text-white w-full md:max-w-[700px]">
+                <span className="w-full md:w-[130px] text-[9px] md:text-sm">
+                  Nível
+                </span>
+                <span className="w-full text-[9px] md:text-sm">Small</span>
+                <span className="w-full text-[9px] md:text-sm">Big</span>
+                <span className="w-full text-[9px] md:text-sm">
+                  Duração (min)
+                </span>
+                <span className="w-full md:w-[130px] text-[9px] md:text-sm"></span>
               </div>
               {blinds.map((blind, index) => (
                 <div
-                  className="flex flex-row gap-2 justify-center items-center"
+                  className="flex flex-row justify-center items-center gap-2 w-full  md:max-w-[700px]"
                   key={index}
                 >
-                  <span className="w-full md:w-[50px] text-white">
+                  <span className="w-full md:w-[130px] text-white">
                     {index + 1} -{" "}
                   </span>
                   <input
                     className={`${
                       blind.smallError ? "border-red-500 border-[3px]" : ""
-                    } w-full md:w-[150px] h-10 px-3 border rounded-lg`}
+                    } w-full h-10 px-3 border rounded-lg`}
                     type="number"
                     placeholder="Small"
                     value={blind.small}
@@ -308,7 +312,7 @@ export default function Home() {
                   <input
                     className={`${
                       blind.bigError ? "border-red-500 border-[3px]" : ""
-                    } w-full md:w-[150px] h-10 px-3 border rounded-lg`}
+                    } w-full h-10 px-3 border rounded-lg`}
                     type="number"
                     placeholder="Big"
                     value={blind.big}
@@ -317,7 +321,7 @@ export default function Home() {
                   <input
                     className={`${
                       blind.durationError ? "border-red-500 border-[3px]" : ""
-                    } w-full md:w-[150px] h-10 px-3 border rounded-lg`}
+                    } w-full h-10 px-3 border rounded-lg`}
                     type="number"
                     placeholder="Duration"
                     value={blind.duration}
@@ -326,7 +330,7 @@ export default function Home() {
                     }
                   />
                   <button
-                    className="flex flex-row items-center transition ease-in-out gap-2 p-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 hover:outline-none"
+                    className="w-[90px] flex flex-row items-center transition ease-in-out gap-2 p-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 hover:outline-none"
                     onClick={handleRemoveBlind(index)}
                   >
                     <FaTrash />
