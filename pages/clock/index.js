@@ -4,6 +4,7 @@ import { FiPause, FiPlay } from "react-icons/fi";
 import { FaArrowRotateRight, FaTrash } from "react-icons/fa6";
 import { GrCaretNext, GrCaretPrevious, GrConfigure } from "react-icons/gr";
 import { FaRegClock } from "react-icons/fa6";
+import { LuMegaphone, LuMegaphoneOff } from "react-icons/lu";
 import { IoIosAdd } from "react-icons/io";
 import { BLINDS } from "../../libs/items";
 import styles from "../../styles/Home.module.css";
@@ -42,6 +43,7 @@ export default function Home() {
   const [blinds, setBlinds] = useState([...BLINDS]);
   const [currentBlindIndex, setCurrentBlindIndex] = useState(0);
   const [hasPaused, setHasPaused] = useState(false);
+  const [hasAlarm, setHasAlarm] = useState(false);
 
   const getCurrentMinAndSeconds = (blind) => {
     const totalTimeSeconds = blind.duration * 60;
@@ -74,6 +76,13 @@ export default function Home() {
       } else {
         totalTimeSeconds = blinds[currentBlindIndex].duration * 60;
         setCurrentBlindIndex((prev) => prev + 1);
+      }
+
+      if (hasAlarm && totalTimeSeconds === 10) {
+        const audioElement = document.getElementById("myAudio");
+        if (audioElement) {
+          audioElement.play();
+        }
       }
 
       const minutes = Math.floor(totalTimeSeconds / 60);
@@ -279,6 +288,7 @@ export default function Home() {
           </div>
         </section>
         <section>
+          <audio id="myAudio" src="/alarm.wav" type="audio/wav" />
           {!hasStarted && (
             <div className="flex flex-col items-center justify-center p-5 md:p-10 w-full gap-2">
               <div className="flex flex-row justify-center items-center gap-2 text-white w-full md:max-w-[700px]">
@@ -292,6 +302,7 @@ export default function Home() {
                 </span>
                 <span className="w-full md:w-[130px] text-[9px] md:text-sm"></span>
               </div>
+
               {blinds.map((blind, index) => (
                 <div
                   className="flex flex-row justify-center items-center gap-2 w-full  md:max-w-[700px]"
@@ -337,7 +348,15 @@ export default function Home() {
                   </button>
                 </div>
               ))}
-              <div className="mt-3 flex flex-row gap-2 items-center justify-center p-2">
+              <div className="mt-3 flex flex-row gap-2 items-center justify-evenly p-2 w-full">
+                <button
+                  className={`flex flex-row items-center transition ease-in-out p-3 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ${
+                    !hasAlarm && "opacity-50"
+                  }`}
+                  onClick={() => setHasAlarm(!hasAlarm)}
+                >
+                  {hasAlarm ? <LuMegaphone /> : <LuMegaphoneOff />}
+                </button>
                 <button
                   className="flex flex-row items-center gap-2 min-w-[110px] px-4 py-2 bg-blue-500 text-white rounded-lg"
                   onClick={handleStart}
@@ -383,15 +402,9 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-              <div className="flex flex-row gap-2">
+              <div className="flex flex-row gap-2 mt-7">
                 <button
-                  className="flex flex-row items-center transition ease-in-out gap-2 mt-7 p-4 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-                  onClick={handleConfigure}
-                >
-                  <GrConfigure />
-                </button>
-                <button
-                  className={`flex flex-row items-center transition ease-in-out mt-7 p-4 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ${
+                  className={`flex flex-row items-center transition ease-in-out p-6 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ${
                     currentBlindIndex === 0 && "opacity-50"
                   }`}
                   onClick={handlePrevious}
@@ -402,14 +415,14 @@ export default function Home() {
 
                 {!hasPaused ? (
                   <button
-                    className="flex flex-row items-center transition ease-in-out gap-2 mt-7 p-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 hover:outline-none"
+                    className="flex flex-row items-center transition ease-in-out gap-2 p-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 hover:outline-none"
                     onClick={handlePause}
                   >
                     <FiPause />
                   </button>
                 ) : (
                   <button
-                    className="flex flex-row items-center transition ease-in-out gap-2 mt-7 p-4 py-2 bg-green-500 text-white rounded-full hover:bg-green-700 hover:outline-none"
+                    className="flex flex-row items-center transition ease-in-out gap-2 p-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-700 hover:outline-none"
                     onClick={handleUnpause}
                   >
                     <FiPlay />
@@ -417,7 +430,7 @@ export default function Home() {
                 )}
 
                 <button
-                  className={`flex flex-row items-center transition ease-in-out gap-2 mt-7 p-4 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ${
+                  className={`flex flex-row items-center transition ease-in-out gap-2 p-6 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ${
                     currentBlindIndex === blinds.length - 1 && "opacity-50"
                   }`}
                   onClick={handleNext}
@@ -425,9 +438,26 @@ export default function Home() {
                 >
                   <GrCaretNext />
                 </button>
+              </div>
+              <div className="flex flex-row gap-2 mt-7">
+                <button
+                  className="flex flex-row items-center transition ease-in-out gap-2  p-4 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+                  onClick={handleConfigure}
+                >
+                  <GrConfigure />
+                </button>
 
                 <button
-                  className="flex flex-row items-center transition ease-in-out gap-2 mt-7 p-4 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none"
+                  className={`flex flex-row items-center transition ease-in-out p-4 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ${
+                    !hasAlarm && "opacity-50"
+                  }`}
+                  onClick={() => setHasAlarm(!hasAlarm)}
+                >
+                  {hasAlarm ? <LuMegaphone /> : <LuMegaphoneOff />}
+                </button>
+
+                <button
+                  className="flex flex-row items-center transition ease-in-out gap-2 p-4 bg-white text-black rounded-full hover:bg-gray-500 hover:outline-none"
                   onClick={handleRestart}
                 >
                   <FaArrowRotateRight />
