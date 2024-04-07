@@ -75,7 +75,7 @@ export default function Home() {
       if (totalTimeSeconds > 0) {
         totalTimeSeconds -= 1;
       } else {
-        totalTimeSeconds = blinds[currentBlindIndex].duration * 60;
+        totalTimeSeconds = blinds[currentBlindIndex + 1].duration * 60;
         setCurrentBlindIndex((prev) => prev + 1);
       }
 
