@@ -9,12 +9,16 @@ const formatMoney = (number) => {
   return money;
 };
 
-function parseRanking (values) {
+function parseRanking(values) {
   const data = values.reduce((acc, curr) => {
     const [name, score, matches] = curr;
-    const rawScore = +score.replace("R$ ", "").replace(',', '');
+    const rawScore = +score.replace("R$ ", "").replace(",", "");
 
     if (!+matches) return acc;
+
+    if (name.toLowerCase() === "glauco") {
+      return acc;
+    }
 
     acc.push({
       name,
@@ -33,28 +37,34 @@ function parseRanking (values) {
 
 export default async function handler(req, res) {
   try {
-    const currentValues = await googleApi.getSheetData(process.env.CURRENT_RANKING_RANGE);
-    const lastValues = await googleApi.getSheetData(process.env.PREVIOUS_RANKING_RANGE);
+    const currentValues = await googleApi.getSheetData(
+      process.env.CURRENT_RANKING_RANGE
+    );
+    const lastValues = await googleApi.getSheetData(
+      process.env.PREVIOUS_RANKING_RANGE
+    );
 
     const currentRanking = parseRanking(currentValues);
     const lastRanking = parseRanking(lastValues);
 
     currentRanking.forEach((ranking, index) => {
       ranking.position = index + 1;
-      const lastRankingIndex = lastRanking.findIndex(item => item.name === ranking.name);
+      const lastRankingIndex = lastRanking.findIndex(
+        (item) => item.name === ranking.name
+      );
 
-      ranking.positionDiff = Math.abs((lastRankingIndex + 1) - ranking.position);
+      ranking.positionDiff = Math.abs(lastRankingIndex + 1 - ranking.position);
 
       if (lastRankingIndex === -1) {
-        ranking.status = 'same';
+        ranking.status = "same";
       } else if (lastRankingIndex > index) {
-        ranking.status = 'up';
+        ranking.status = "up";
       } else if (lastRankingIndex < index) {
-        ranking.status = 'down';
+        ranking.status = "down";
       } else {
-        ranking.status = 'same';
+        ranking.status = "same";
       }
-    })
+    });
 
     res.status(200).json(currentRanking);
   } catch (error) {
