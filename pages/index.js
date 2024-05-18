@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import Script from "next/script";
+import { useRouter } from "next/navigation";
+// import Script from "next/script";
 import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
 import Head from "next/head";
@@ -17,6 +18,7 @@ export default function Home() {
   const [ranking, setRanking] = useState([]);
   const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     setLoading(true);
@@ -50,6 +52,10 @@ export default function Home() {
     );
 
     setFilteredRanking(filtered);
+  };
+
+  const goToPage = () => {
+    router.push("/glauco/ebook");
   };
 
   return (
@@ -231,6 +237,19 @@ export default function Home() {
                       >
                         {item.formattedScore}
                       </h1>
+                      {item.name === "Glauco" && (
+                        <>
+                          <button
+                            className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded-lg animate-pulse"
+                            onClick={goToPage}
+                          >
+                            E-book
+                          </button>
+                          <small className="text-white italic text-center">
+                            compre já!
+                          </small>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
