@@ -92,7 +92,8 @@ export default function Home() {
           itemProp="image"
           content={`https://${domain}/${imagemPrincipal}`}
         />
-        <AdSense pId={addsId} />
+        <meta name="google-adsense-account" content={addsId} />
+        {/* <AdSense pId={addsId} /> */}
         {/* <script async src={addsId} crossorigin="anonymous"></script> */}
         {/* <Script
           async
