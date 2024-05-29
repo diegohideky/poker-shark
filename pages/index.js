@@ -93,7 +93,7 @@ export default function Home() {
           content={`https://${domain}/${imagemPrincipal}`}
         />
         <meta name="google-adsense-account" content={addsId} />
-        {/* <AdSense pId={addsId} /> */}
+        <AdSense pId={addsId} />
         {/* <script async src={addsId} crossorigin="anonymous"></script> */}
         {/* <Script
           async
