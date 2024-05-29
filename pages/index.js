@@ -7,6 +7,8 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import RankingBadge from "../components/rankingBadge";
 import { PLAYERS } from "../libs/items";
+import AdSense from "../components/AdSense";
+import AdBanner from "../components/AdBanner";
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
@@ -90,6 +92,7 @@ export default function Home() {
           itemProp="image"
           content={`https://${domain}/${imagemPrincipal}`}
         />
+        <AdSense pId={addsId} />
         {/* <script async src={addsId} crossorigin="anonymous"></script> */}
         {/* <Script
           async
@@ -158,6 +161,12 @@ export default function Home() {
             />
           </div>
         </section>
+
+        <AdBanner
+          dataAdSlot="5036828311"
+          dataAdFormat="auto"
+          dataFullWidthResponsive={true}
+        />
 
         {loading ? (
           <section className="flex flex-row items-center justify-center p-10 md: p-20">
