@@ -57,7 +57,10 @@ export default function Home() {
   };
 
   const goToPage = () => {
-    router.push("/glauco/ebook");
+    window.open(
+      "https://wolfmaya.com.br/curso-profissionalizante-de-atores-2024-2-presencial/?gad_source=1&gclid=Cj0KCQjw9vqyBhCKARIsAIIcLMGBHYJTDZomEugStk8Q23OwDfGbfA7Z50dRmi2dtyxj6ZzYwMYL8hgaAmp_EALw_wcB",
+      "_blank"
+    );
   };
 
   return (
@@ -253,7 +256,7 @@ export default function Home() {
                             className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded-lg animate-pulse"
                             onClick={goToPage}
                           >
-                            E-book
+                            Curso Novo
                           </button>
                           <small className="text-white italic text-center">
                             compre já!
