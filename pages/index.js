@@ -250,19 +250,17 @@ export default function Home() {
                       >
                         {item.formattedScore}
                       </h1>
-                      {item.name === "Glauco" && (
-                        <>
-                          <button
-                            className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded-lg animate-pulse"
-                            onClick={goToPage}
+                      <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
+                        <div className="flex flex-col text-white">
+                          <small>{item.lastFormattedScore}</small>
+                          <small>p: {item.lastPosition}º</small>
+                          <small
+                            className={`${getTextColor(item.lastScoreDiff)}`}
                           >
-                            Curso Novo
-                          </button>
-                          <small className="text-white italic text-center">
-                            compre já!
+                            d: {item.lastScoreDiff}
                           </small>
-                        </>
-                      )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
