@@ -72,7 +72,7 @@ export const PLAYERS = {
     image: "/players/Waldeir.png",
   },
   Wilker: {
-    image: "/players/Wilker.png",
+    image: "/players/Wilker.jpeg",
   },
 };
 
