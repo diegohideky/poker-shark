@@ -48,6 +48,7 @@ export default async function handler(req, res) {
       const lastRankingIndex = lastRanking.findIndex(
         (item) => item.name === ranking.name
       );
+      ranking.coins = (ranking.score + currentRanking[0].matches * 105) * 100;
 
       ranking.positionDiff = Math.abs(lastRankingIndex + 1 - ranking.position);
 
@@ -69,6 +70,8 @@ export default async function handler(req, res) {
           : lastRanking[lastRankingIndex].formattedScore;
       ranking.lastPosition = lastRankingIndex === -1 ? 0 : lastRankingIndex + 1;
       ranking.lastScoreDiff = ranking.score - ranking.lastScore;
+      ranking.lastCoins =
+        (ranking.lastScore + lastRanking[0].matches * 105) * 100;
     });
 
     res.status(200).json(currentRanking);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaCoins } from "react-icons/fa6";
 // import Script from "next/script";
 import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
@@ -42,6 +43,13 @@ export default function Home() {
     }
 
     return "text-white";
+  };
+
+  const getCoinColor = (number) => {
+    if (number > 0) {
+      return "text-amber";
+    }
+    return "text-[#c0c0c0]";
   };
 
   const onSearch = (event) => {
@@ -244,15 +252,17 @@ export default function Home() {
                         </h1>
                       </div>
                       <h1
-                        className={`text-1xl md:text-2xl font-bold ${getTextColor(
-                          item.score
+                        className={`flex fle-row gap-2 items-center text-1xl md:text-2xl font-bold ${getCoinColor(
+                          item.coins
                         )}`}
                       >
-                        {item.formattedScore}
+                        <FaCoins /> {item.coins}
                       </h1>
                       <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
                         <div className="flex flex-col text-white">
-                          <small>{item.lastFormattedScore}</small>
+                          <small className="flex fle-row gap-2 items-center">
+                            <FaCoins /> {item.lastCoins}
+                          </small>
                           <small>p: {item.lastPosition}º</small>
                           <small
                             className={`${getTextColor(item.lastScoreDiff)}`}
