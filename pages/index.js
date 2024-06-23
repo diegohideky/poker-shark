@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaCoins } from "react-icons/fa6";
+import { FaRankingStar } from "react-icons/fa6";
+import { FaMoneyBillAlt } from "react-icons/fa";
 // import Script from "next/script";
 import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
@@ -263,11 +265,16 @@ export default function Home() {
                           <small className="flex fle-row gap-2 items-center">
                             <FaCoins /> {item.lastCoins}
                           </small>
-                          <small>p: {item.lastPosition}º</small>
+                          <small className="flex fle-row gap-2 items-center">
+                            <FaRankingStar /> {item.lastPosition}º
+                          </small>
                           <small
-                            className={`${getTextColor(item.lastScoreDiff)}`}
+                            className={`flex fle-row gap-2 items-center ${getTextColor(
+                              item.lastScoreDiff
+                            )}`}
                           >
-                            d: {item.lastScoreDiff}
+                            <FaMoneyBillAlt />
+                            {item.lastScoreDiff}
                           </small>
                         </div>
                       </div>
