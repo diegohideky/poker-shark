@@ -254,16 +254,18 @@ export default function Home() {
                         </h1>
                       </div>
                       <h1
-                        className={`flex fle-row gap-2 items-center text-1xl md:text-2xl font-bold ${getCoinColor(
-                          item.coins
+                        className={`flex fle-row gap-2 items-center text-1xl md:text-2xl font-bold ${getTextColor(
+                          item.score
                         )}`}
                       >
-                        <FaCoins /> {item.coins}
+                        {/* <FaCoins /> */}
+                        {item.formattedScore}
                       </h1>
                       <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
                         <div className="flex flex-col text-white">
                           <small className="flex fle-row gap-2 items-center">
-                            <FaCoins /> {item.lastCoins}
+                            {/* <FaCoins /> */}
+                            {item.lastFormattedScore}
                           </small>
                           <small className="flex fle-row gap-2 items-center">
                             <FaRankingStar /> {item.lastPosition}º
