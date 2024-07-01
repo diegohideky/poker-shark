@@ -3,7 +3,7 @@ export const PLAYERS = {
     image: "/players/Ademir.png",
   },
   Allan: {
-    image: "/players/Allan.png",
+    image: "/players/Allan.jpeg",
   },
   Arnaldo: {
     image: "/players/Arnaldo.png",
