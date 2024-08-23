@@ -62,6 +62,9 @@ export const PLAYERS = {
   Rodolfo: {
     image: "/players/Rodolfo.png",
   },
+  Tony: {
+    image: "/players/Tony.jpeg",
+  },
   Vianna: {
     image: "/players/Vianna.png",
   },
