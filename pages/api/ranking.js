@@ -33,12 +33,17 @@ function parseRanking(values) {
 
 export default async function handler(req, res) {
   try {
-    const currentValues = await googleApi.getSheetData(
-      process.env.CURRENT_RANKING_RANGE
-    );
-    const lastValues = await googleApi.getSheetData(
-      process.env.PREVIOUS_RANKING_RANGE
-    );
+    const currentRankingRange =
+      req.query.source === "bruno-house"
+        ? process.env.CURRENT_RANKING_RANGE_BRUNO
+        : process.env.CURRENT_RANKING_RANGE;
+    const previousRankingRange =
+      req.query.source === "bruno-house"
+        ? process.env.PREVIOUS_RANKING_RANGE_BRUNO
+        : process.env.PREVIOUS_RANKING_RANGE;
+
+    const currentValues = await googleApi.getSheetData(currentRankingRange);
+    const lastValues = await googleApi.getSheetData(previousRankingRange);
 
     const currentRanking = parseRanking(currentValues);
     const lastRanking = parseRanking(lastValues);
