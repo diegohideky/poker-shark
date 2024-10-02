@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import CountUp from "react-countup";
 import { useRouter } from "next/navigation";
-import { FaCoins } from "react-icons/fa6";
 import { FaRankingStar } from "react-icons/fa6";
 import { FaMoneyBillAlt } from "react-icons/fa";
 // import Script from "next/script";
@@ -12,6 +12,7 @@ import RankingBadge from "../components/rankingBadge";
 import { PLAYERS } from "../libs/items";
 import AdSense from "../components/AdSense";
 import AdBanner from "../components/AdBanner";
+import { formatMoney } from "../libs/format";
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
@@ -23,7 +24,6 @@ export default function Home() {
   const [ranking, setRanking] = useState([]);
   const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     setLoading(true);
@@ -47,13 +47,6 @@ export default function Home() {
     return "text-white";
   };
 
-  const getCoinColor = (number) => {
-    if (number > 0) {
-      return "text-amber";
-    }
-    return "text-[#c0c0c0]";
-  };
-
   const onSearch = (event) => {
     const { value } = event.target;
 
@@ -70,6 +63,51 @@ export default function Home() {
     window.open(
       "https://wolfmaya.com.br/curso-profissionalizante-de-atores-2024-2-presencial/?gad_source=1&gclid=Cj0KCQjw9vqyBhCKARIsAIIcLMGBHYJTDZomEugStk8Q23OwDfGbfA7Z50dRmi2dtyxj6ZzYwMYL8hgaAmp_EALw_wcB",
       "_blank"
+    );
+  };
+
+  const MoneyCountUp = ({ item }) => {
+    const countUpRef = useRef(null);
+    const [startCounting, setStartCounting] = useState(false);
+
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setStartCounting(true);
+            observer.disconnect(); // Stop observing after it has started counting
+          }
+        },
+        { threshold: 0.1 } // Adjust the threshold as needed
+      );
+
+      if (countUpRef.current) {
+        observer.observe(countUpRef.current);
+      }
+
+      return () => {
+        if (countUpRef.current) {
+          observer.unobserve(countUpRef.current);
+        }
+      };
+    }, []);
+
+    return (
+      <h1
+        ref={countUpRef}
+        className={`flex flex-row gap-2 items-center text-1xl md:text-2xl font-bold ${getTextColor(
+          item.score
+        )}`}
+      >
+        {startCounting && (
+          <CountUp
+            start={0}
+            end={item.score}
+            delay={0}
+            formattingFn={(value) => formatMoney(value)}
+          />
+        )}
+      </h1>
     );
   };
 
@@ -253,14 +291,7 @@ export default function Home() {
                           {item.name}
                         </h1>
                       </div>
-                      <h1
-                        className={`flex fle-row gap-2 items-center text-1xl md:text-2xl font-bold ${getTextColor(
-                          item.score
-                        )}`}
-                      >
-                        {/* <FaCoins /> */}
-                        {item.formattedScore}
-                      </h1>
+                      <MoneyCountUp item={item} />
                       <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
                         <div className="flex flex-col text-white">
                           <small className="flex fle-row gap-2 items-center">
