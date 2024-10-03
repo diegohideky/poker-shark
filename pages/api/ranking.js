@@ -1,13 +1,5 @@
+import { formatMoney } from "../../libs/format";
 import * as googleApi from "../../libs/googleapi";
-
-const formatMoney = (number) => {
-  const money = number.toLocaleString("pt-br", {
-    style: "currency",
-    currency: "BRL",
-  });
-
-  return money;
-};
 
 function parseRanking(values) {
   const data = values.reduce((acc, curr) => {
@@ -44,6 +36,7 @@ export default async function handler(req, res) {
 
     const currentValues = await googleApi.getSheetData(currentRankingRange);
     const lastValues = await googleApi.getSheetData(previousRankingRange);
+    const caixinha = await googleApi.getSheetData(process.env.CAIXA_RANGE);
 
     const currentRanking = parseRanking(currentValues);
     const lastRanking = parseRanking(lastValues);
@@ -79,7 +72,10 @@ export default async function handler(req, res) {
         (ranking.lastScore + lastRanking[0].matches * 105) * 100;
     });
 
-    res.status(200).json(currentRanking);
+    res.status(200).json({
+      ranking: currentRanking,
+      caixinha: caixinha[0] && caixinha[0][0] ? +caixinha[0][0] : 0,
+    });
   } catch (error) {
     console.log({ error });
     res.status(500).json({ error });

@@ -22,6 +22,7 @@ const addsId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
 
 export default function Home() {
   const [ranking, setRanking] = useState([]);
+  const [caixinha, setCaixinha] = useState(0);
   const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,8 +31,9 @@ export default function Home() {
     fetch("/api/ranking")
       .then((res) => res.json())
       .then((data) => {
-        setRanking(data);
-        setFilteredRanking(data);
+        setRanking(data.ranking);
+        setFilteredRanking(data.ranking);
+        setCaixinha(data.caixinha);
       })
       .catch((err) => console.log({ err }))
       .finally(() => setLoading(false));
@@ -66,7 +68,7 @@ export default function Home() {
     );
   };
 
-  const MoneyCountUp = ({ item }) => {
+  const MoneyCountUp = ({ moneyValue }) => {
     const countUpRef = useRef(null);
     const [startCounting, setStartCounting] = useState(false);
 
@@ -96,15 +98,15 @@ export default function Home() {
       <h1
         ref={countUpRef}
         className={`flex flex-row gap-2 items-center text-1xl md:text-2xl font-bold ${getTextColor(
-          item.score
+          moneyValue
         )}`}
       >
         {startCounting && (
           <CountUp
             start={0}
-            end={item.score}
-            delay={0}
+            end={moneyValue}
             formattingFn={(value) => formatMoney(value)}
+            decimals={2}
           />
         )}
       </h1>
@@ -203,7 +205,6 @@ export default function Home() {
         </section>
 
         <section>
-          {/* add an input search using tailwind */}
           <div className="flex flex-row items-center justify-center p-5 md:p-10 w-full">
             <input
               className="w-full md:w-[350px] h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
@@ -211,6 +212,15 @@ export default function Home() {
               placeholder="Digite o nome do caga tronco"
               onChange={onSearch}
             />
+          </div>
+        </section>
+
+        <section>
+          <div className="flex flex-row items-center justify-center gap-2 p-2 md:p-2 w-full">
+            <span className="text-1xl md:text-2xl font-bold text-white">
+              Caixinha:
+            </span>{" "}
+            <MoneyCountUp moneyValue={caixinha} />
           </div>
         </section>
 
@@ -291,7 +301,7 @@ export default function Home() {
                           {item.name}
                         </h1>
                       </div>
-                      <MoneyCountUp item={item} />
+                      <MoneyCountUp moneyValue={item.score} />
                       <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
                         <div className="flex flex-col text-white">
                           <small className="flex fle-row gap-2 items-center">
