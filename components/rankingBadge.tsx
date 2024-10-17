@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const RankingBadge = ({ position, className }) => {
   const getBadgeColor = (position) => {
     if (position === 1) {
@@ -9,13 +11,17 @@ const RankingBadge = ({ position, className }) => {
     }
 
     return "bg-white";
-  }
+  };
 
   return (
-    <div className={`flex flex-col items-center justify-center w-12 h-12 rounded-full ${getBadgeColor(position)} ${className}`}>
+    <div
+      className={`flex flex-col items-center justify-center w-12 h-12 rounded-full ${getBadgeColor(
+        position
+      )} ${className}`}
+    >
       <span className={`text-2xl text-[#076157]`}>{position}º</span>
     </div>
   );
-}
+};
 
 export default RankingBadge;

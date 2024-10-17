@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { google } from "googleapis";
 
 let client = null;
@@ -15,8 +16,10 @@ export async function getSheetData(range) {
   const credentials = {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
     client_id: process.env.GOOGLE_CLIENT_ID,
-    private_key: process.env.GOOGLE_PRIVATE_KEY?.split(String.raw`\n`).join('\n'),
-  }
+    private_key: process.env.GOOGLE_PRIVATE_KEY?.split(String.raw`\n`).join(
+      "\n"
+    ),
+  };
 
   const auth = new google.auth.GoogleAuth({
     credentials,
@@ -30,7 +33,7 @@ export async function getSheetData(range) {
   const result = await sheets.spreadsheets?.values?.get({
     auth,
     spreadsheetId: process.env.SPREADSHEET_ID,
-    range
+    range,
   });
 
   return result?.data?.values || [];

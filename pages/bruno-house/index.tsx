@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaCoins } from "react-icons/fa6";

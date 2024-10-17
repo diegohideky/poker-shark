@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Head from "next/head";
 
 const titulo = "E-book do Glauco";

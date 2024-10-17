@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useState, useRef } from "react";
 import CountUp from "react-countup";
 import { useRouter } from "next/navigation";
