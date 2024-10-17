@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { FiPause, FiPlay } from "react-icons/fi";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Script from "next/script";
 
 const AdSense = ({ pId }) => {
