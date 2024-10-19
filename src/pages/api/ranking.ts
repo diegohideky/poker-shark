@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { formatMoney } from "../../libs/format";
-import * as googleApi from "../../libs/googleapi";
+import { formatMoney } from "@libs/format";
+import * as googleApi from "@libs/googleapi";
 
 function parseRanking(values) {
   const data = values.reduce((acc, curr) => {

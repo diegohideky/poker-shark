@@ -8,12 +8,12 @@ import { FaMoneyBillAlt } from "react-icons/fa";
 import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
-import RankingBadge from "../components/rankingBadge";
-import { PLAYERS } from "../libs/items";
-import AdSense from "../components/AdSense";
-import AdBanner from "../components/AdBanner";
-import { formatMoney } from "../libs/format";
+import styles from "@styles/Home.module.css";
+import RankingBadge from "@components/rankingBadge";
+import { PLAYERS } from "@libs/items";
+import AdSense from "@components/AdSense";
+import AdBanner from "@components/AdBanner";
+import { formatMoney } from "@libs/format";
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
