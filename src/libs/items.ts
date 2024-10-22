@@ -26,6 +26,9 @@ export const PLAYERS = {
   Felipe: {
     image: "/players/Felipe.png",
   },
+  "Felipe O": {
+    image: "/players/Felipe Othelo.jpeg",
+  },
   Gilson: {
     image: "/players/Gilson.png",
   },
