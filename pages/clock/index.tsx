@@ -8,7 +8,7 @@ import { FaRegClock } from "react-icons/fa6";
 import { LuMegaphone, LuMegaphoneOff } from "react-icons/lu";
 import { IoIosAdd } from "react-icons/io";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
-import { BLINDS } from "@libs/items";
+import { BLINDS } from "libs/items";
 import styles from "@styles/Home.module.css";
 
 const titulo = "Poker Shark's Clock";

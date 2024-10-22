@@ -3,13 +3,19 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "start": "next start"
+    "start": "next start",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d database/data-source.ts",
+    "migration:create": "npx typeorm migration:create",
+    "migration:run": "npm run typeorm migration:run",
+    "migration:revert": "npm run typeorm migration:revert",
+    "seed": "npx ts-node -r tsconfig-paths/register seeders/seed.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "bcrypt": "^5.1.1",
     "googleapis": "^129.0.0",
     "next": "^14.2.14",
     "pg": "^8.13.0",
@@ -18,19 +24,24 @@
     "react-dom": "18.2.0",
     "react-icons": "^5.0.1",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "zod": "^3.23.8"
   },
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
-    "@types/node": "^22.7.6",
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^22.7.8",
     "@types/react": "^18.3.11",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.10.0",
     "autoprefixer": "^10.4.16",
+    "bcryptjs": "^2.4.3",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.3"
   }
 }

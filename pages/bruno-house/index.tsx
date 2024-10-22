@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { useEffect, useState, useRef } from "react";
-import CountUp from "react-countup";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaCoins } from "react-icons/fa6";
 import { FaRankingStar } from "react-icons/fa6";
 import { FaMoneyBillAlt } from "react-icons/fa";
 // import Script from "next/script";
@@ -9,32 +9,30 @@ import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
 import Head from "next/head";
 import styles from "@styles/Home.module.css";
-import RankingBadge from "@components/rankingBadge";
-import { PLAYERS } from "@libs/items";
-import AdSense from "@components/AdSense";
-import AdBanner from "@components/AdBanner";
-import { formatMoney } from "@libs/format";
+import RankingBadge from "components/rankingBadge";
+import { PLAYERS } from "libs/items";
+import AdSense from "components/AdSense";
+import AdBanner from "components/AdBanner";
 
-const titulo = "Poker Shark";
-const descricao = "O poker mais sanguinário do Grand Splendor";
+const titulo = "Poker Shark Casa do Bruno";
+const descricao = "O poker mais secreto do Grand Splendor";
 const imagemPrincipal = "/poker-shark-bg.jpeg";
 const domain = "poker-shark.vercel.app";
 const addsId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
 
 export default function Home() {
   const [ranking, setRanking] = useState([]);
-  const [caixinha, setCaixinha] = useState(0);
   const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/ranking")
+    fetch("/api/ranking?source=bruno-house")
       .then((res) => res.json())
       .then((data) => {
-        setRanking(data.ranking);
-        setFilteredRanking(data.ranking);
-        setCaixinha(data.caixinha);
+        setRanking(data);
+        setFilteredRanking(data);
       })
       .catch((err) => console.log({ err }))
       .finally(() => setLoading(false));
@@ -48,6 +46,13 @@ export default function Home() {
     }
 
     return "text-white";
+  };
+
+  const getCoinColor = (number) => {
+    if (number > 0) {
+      return "text-amber";
+    }
+    return "text-[#c0c0c0]";
   };
 
   const onSearch = (event) => {
@@ -66,51 +71,6 @@ export default function Home() {
     window.open(
       "https://wolfmaya.com.br/curso-profissionalizante-de-atores-2024-2-presencial/?gad_source=1&gclid=Cj0KCQjw9vqyBhCKARIsAIIcLMGBHYJTDZomEugStk8Q23OwDfGbfA7Z50dRmi2dtyxj6ZzYwMYL8hgaAmp_EALw_wcB",
       "_blank"
-    );
-  };
-
-  const MoneyCountUp = ({ moneyValue }) => {
-    const countUpRef = useRef(null);
-    const [startCounting, setStartCounting] = useState(false);
-
-    useEffect(() => {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setStartCounting(true);
-            observer.disconnect(); // Stop observing after it has started counting
-          }
-        },
-        { threshold: 0.1 } // Adjust the threshold as needed
-      );
-
-      if (countUpRef.current) {
-        observer.observe(countUpRef.current);
-      }
-
-      return () => {
-        if (countUpRef.current) {
-          observer.unobserve(countUpRef.current);
-        }
-      };
-    }, []);
-
-    return (
-      <h1
-        ref={countUpRef}
-        className={`flex flex-row gap-2 items-center text-1xl md:text-2xl font-bold ${getTextColor(
-          moneyValue
-        )}`}
-      >
-        {startCounting && (
-          <CountUp
-            start={0}
-            end={moneyValue}
-            formattingFn={(value) => formatMoney(value)}
-            decimals={2}
-          />
-        )}
-      </h1>
     );
   };
 
@@ -206,6 +166,7 @@ export default function Home() {
         </section>
 
         <section>
+          {/* add an input search using tailwind */}
           <div className="flex flex-row items-center justify-center p-5 md:p-10 w-full">
             <input
               className="w-full md:w-[350px] h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
@@ -213,15 +174,6 @@ export default function Home() {
               placeholder="Digite o nome do caga tronco"
               onChange={onSearch}
             />
-          </div>
-        </section>
-
-        <section>
-          <div className="flex flex-row items-center justify-center gap-2 p-2 md:p-2 w-full">
-            <span className="text-1xl md:text-2xl font-bold text-white">
-              Caixinha:
-            </span>{" "}
-            <MoneyCountUp moneyValue={caixinha} />
           </div>
         </section>
 
@@ -302,7 +254,14 @@ export default function Home() {
                           {item.name}
                         </h1>
                       </div>
-                      <MoneyCountUp moneyValue={item.score} />
+                      <h1
+                        className={`flex fle-row gap-2 items-center text-1xl md:text-2xl font-bold ${getTextColor(
+                          item.score
+                        )}`}
+                      >
+                        {/* <FaCoins /> */}
+                        {item.formattedScore}
+                      </h1>
                       <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
                         <div className="flex flex-col text-white">
                           <small className="flex fle-row gap-2 items-center">

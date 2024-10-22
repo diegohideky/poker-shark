@@ -1,6 +1,6 @@
 // @ts-nocheck
 // pages/_app.js
-
+import "reflect-metadata";
 import "@styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
