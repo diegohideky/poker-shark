@@ -2,7 +2,6 @@
 import Script from "next/script";
 
 const AdSense = ({ pId }) => {
-  console.log("entrei: ", pId);
   return (
     <Script
       async
