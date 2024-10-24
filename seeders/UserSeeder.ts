@@ -1,35 +1,33 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import bcrypt from "bcrypt";
 import { User } from "@entities/User";
 import { Role } from "@entities/Role";
 import { UserRole } from "@entities/UserRole";
+import { encryptPassword } from "@libs/password";
 
 export const UserSeeder = async (dataSource: DataSource) => {
   const userRepository = dataSource.getRepository(User);
   const roleRepository = dataSource.getRepository(Role);
   const userRoleRepository = dataSource.getRepository(UserRole);
 
-  // Fetch the ADMIN role
   const adminRole = await roleRepository.findOneBy({ name: "ADMIN" });
 
   const users = [
     {
-      username: "adminUser",
-      password: "securepassword", // Password to be hashed
+      name: process.env.ADMIN_USER_NAME,
+      username: process.env.ADMIN_USER_USER_NAME,
+      password: process.env.ADMIN_USER_PASSWORD, // Password to be hashed
       roles: adminRole ? [adminRole] : [],
     },
   ];
 
   for (const user of users) {
     let newUser = null;
-    // Check if the user already exists
     const existingUser = await userRepository.findOneBy({
       username: user.username,
     });
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(user.password, 10); // 10 is the salt rounds
+    const hashedPassword = await encryptPassword(user.password);
 
     if (existingUser) {
       // Update existing user
@@ -37,8 +35,8 @@ export const UserSeeder = async (dataSource: DataSource) => {
       await userRepository.save(existingUser);
       console.log(`Updated user: ${existingUser.username}`);
     } else {
-      // Create new user
       const data = userRepository.create({
+        name: user.name,
         username: user.username,
         password: hashedPassword, // Save the hashed password
       });
@@ -46,7 +44,6 @@ export const UserSeeder = async (dataSource: DataSource) => {
       console.log(`Created user: ${newUser.username}`);
     }
 
-    // Handle roles
     if (user.roles) {
       for (const role of user.roles) {
         const userRole = userRoleRepository.create({

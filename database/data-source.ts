@@ -4,6 +4,11 @@ import { Role } from "@entities/Role";
 import { User } from "@entities/User";
 import { UserRole } from "@entities/UserRole";
 
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config({ path: ".env.local" });
+
 const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.DB_HOST,
@@ -12,7 +17,7 @@ const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: [User, Role, UserRole],
-  migrations: ["dist/migrations/**/*.ts"],
+  migrations: ["dist/migrations/*.ts"],
   synchronize: false, // Disable in production and use migrations instead
   logging: true,
 });

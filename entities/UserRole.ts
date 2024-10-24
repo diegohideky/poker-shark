@@ -4,7 +4,11 @@ import {
   Column,
   DeleteDateColumn,
   BaseEntity,
+  ManyToOne,
+  Relation,
 } from "typeorm";
+import { User } from "./User";
+import { Role } from "./Role";
 
 @Entity({ name: "users_roles" })
 export class UserRole extends BaseEntity {
@@ -18,5 +22,11 @@ export class UserRole extends BaseEntity {
   roleId: string;
 
   @DeleteDateColumn()
-  deletedAt?: Date;
+  deletedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.userRoles)
+  user: Relation<User>;
+
+  @ManyToOne(() => Role, (role) => role.userRoles)
+  role: Relation<Role>;
 }

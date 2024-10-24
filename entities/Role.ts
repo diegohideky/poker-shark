@@ -4,7 +4,10 @@ import {
   Column,
   DeleteDateColumn,
   BaseEntity,
+  OneToMany,
+  Relation,
 } from "typeorm";
+import { UserRole } from "./UserRole";
 
 @Entity({ name: "roles" })
 export class Role extends BaseEntity {
@@ -16,4 +19,7 @@ export class Role extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date | null; // Optional, can be null
+
+  @OneToMany(() => UserRole, (userRole) => userRole.role)
+  userRoles: Relation<UserRole[]>;
 }
