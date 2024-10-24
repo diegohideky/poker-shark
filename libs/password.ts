@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import crypto from "crypto";
 
 // Function to encrypt the password
 export const encryptPassword = async (password: string): Promise<string> => {
