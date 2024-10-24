@@ -16,10 +16,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: parsed.error.errors });
   }
 
-  const { username, password } = parsed.data;
+  const { username, password, passwordConfirmation } = parsed.data;
+
+  if (password !== passwordConfirmation) {
+    return res.status(400).json({ error: "Passwords do not match" });
+  }
+
+  const connection = await dbConnect();
 
   try {
-    const connection = await dbConnect();
     const userRepo = await dataSource.getRepository(User);
 
     // Check if the user already exists
@@ -40,12 +45,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // Save the user to the database
     await userRepo.save(newUser);
 
-    // Close the connection
-    await connection.destroy();
-
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
     return res.status(500).json({ error: "Internal server error" });
+  } finally {
+    await connection.destroy();
   }
 };
