@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
+import { NextApiResponse, NextApiHandler } from "next";
 import { verifyToken } from "@libs/jwt";
 import dataSource from "@db/data-source"; // Your data source connection
 import { User } from "@entities/User";
