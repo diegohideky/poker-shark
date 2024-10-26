@@ -9,3 +9,33 @@ export const UpdateTeamSchema = z.object({
   name: z.string().min(1).optional(),
   photoUrl: z.string().url().optional(),
 });
+
+export const FindTeamSchema = z.object({
+  offset: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val) : 0)),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val) : 10)),
+  search: z.string().optional(),
+  orderField: z.enum(["name", "createdAt", "updatedAt"]).optional(),
+  orderDirection: z.enum(["ASC", "DESC"]).optional(),
+});
+
+export const PostTeamRequestSchema = z.object({
+  query: z.object({
+    id: z.string().uuid("Invalid team ID format"), // `teamId` must be a valid UUID
+  }),
+});
+
+export const PutTeamRequestSchema = z.object({
+  query: z.object({
+    id: z.string().uuid("Invalid team ID format"),
+    userId: z.string().uuid("Invalid user ID format"),
+  }),
+  body: z.object({
+    accept: z.boolean({ required_error: "'accept' is required" }),
+  }),
+});

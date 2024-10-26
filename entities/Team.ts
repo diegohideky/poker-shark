@@ -4,14 +4,15 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  BaseEntity,
-  DeleteDateColumn,
   Relation,
+  OneToMany,
 } from "typeorm";
-import { User } from "./User"; // Assuming the User entity is in the same folder
+import { User } from "./User";
+import { TeamPlayer } from "./TeamPlayer";
+import { SoftDeleteEntity } from "interfaces";
 
 @Entity("teams")
-export class Team extends BaseEntity {
+export class Team extends SoftDeleteEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -25,9 +26,9 @@ export class Team extends BaseEntity {
   @JoinColumn({ name: "ownerId" })
   owner: Relation<User>;
 
+  @OneToMany(() => TeamPlayer, (teamPlayer) => teamPlayer.team)
+  players: Relation<TeamPlayer[]>;
+
   @Column({ type: "varchar", length: 255, nullable: true })
   photoUrl?: string;
-
-  @DeleteDateColumn()
-  deletedAt: Date | null;
 }

@@ -3,15 +3,15 @@ import {
   PrimaryGeneratedColumn,
   Column,
   DeleteDateColumn,
-  BaseEntity,
   ManyToOne,
   Relation,
 } from "typeorm";
 import { User } from "./User";
 import { Role } from "./Role";
+import { SoftDeleteEntity } from "interfaces";
 
 @Entity({ name: "users_roles" })
-export class UserRole extends BaseEntity {
+export class UserRole extends SoftDeleteEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

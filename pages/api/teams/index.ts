@@ -3,7 +3,7 @@ import { Team } from "@entities/Team";
 import { authMiddleware } from "@middleware/authMiddleware";
 import { authorize } from "@middleware/authorize";
 import dataSource from "@db/data-source";
-import { TeamSchema } from "./schema";
+import { FindTeamSchema, TeamSchema } from "./schema";
 import { dbMiddleware } from "@middleware/dbMiddleware";
 import { UserNextApiRequest } from "types";
 
@@ -35,9 +35,42 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
       return res.status(500).json({ error: "Error creating team" });
     }
   } else if (req.method === "GET") {
+    const parsedQuery = FindTeamSchema.safeParse(req.query);
+    if (!parsedQuery.success) {
+      return res.status(400).json({ error: parsedQuery.error });
+    }
+
+    const {
+      offset = 0,
+      limit = 10,
+      search,
+      orderField,
+      orderDirection = "ASC",
+    } = parsedQuery.data;
+
     try {
-      const teams = await teamRepo.find();
-      return res.status(200).json(teams);
+      const queryBuilder = teamRepo
+        .createQueryBuilder("team")
+        .where("team.deletedAt IS NULL");
+
+      if (search) {
+        queryBuilder.andWhere("team.name ILIKE :search", {
+          search: `%${search}%`,
+        });
+      }
+
+      if (orderField && orderDirection) {
+        queryBuilder.orderBy(`team.${orderField}`, orderDirection);
+      }
+
+      queryBuilder.skip(offset).take(limit);
+
+      const [teams, total] = await queryBuilder.getManyAndCount();
+
+      return res.status(200).json({
+        data: teams,
+        total,
+      });
     } catch (error) {
       return res.status(500).json({ error: "Error fetching teams" });
     }

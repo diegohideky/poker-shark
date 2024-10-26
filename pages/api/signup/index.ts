@@ -17,7 +17,7 @@ async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ error: parsed.error.errors });
   }
 
-  const { username, password, passwordConfirmation } = parsed.data;
+  const { name, username, password, passwordConfirmation } = parsed.data;
 
   if (password !== passwordConfirmation) {
     return res.status(400).json({ error: "Passwords do not match" });
@@ -34,13 +34,16 @@ async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
     const hashedPassword = await encryptPassword(password);
 
     const newUser = userRepo.create({
+      name,
       username,
       password: hashedPassword,
     });
 
-    await userRepo.save(newUser);
+    const user = await userRepo.save(newUser);
 
-    return res.status(201).json({ message: "User created successfully" });
+    return res
+      .status(201)
+      .json({ id: user.id, message: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
     return res.status(500).json({ error: "Internal server error" });
