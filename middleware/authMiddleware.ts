@@ -3,7 +3,6 @@ import { verifyToken } from "@libs/jwt";
 import dataSource from "@db/data-source"; // Your data source connection
 import { User } from "@entities/User";
 import { AuthenticatedNextApiRequest } from "./types"; // Define this if needed for typed request
-import dbConnect from "@db/dbConnect";
 
 export const authMiddleware = (handler: NextApiHandler) => {
   return async (req: AuthenticatedNextApiRequest, res: NextApiResponse) => {
