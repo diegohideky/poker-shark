@@ -8,6 +8,7 @@ import {
   Relation,
 } from "typeorm";
 import { UserRole } from "./UserRole";
+import { Team } from "./Team";
 
 @Entity({ name: "users" })
 export class User extends BaseEntity {
@@ -28,4 +29,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: Relation<UserRole[]>;
+
+  @OneToMany(() => Team, (team) => team.owner)
+  teams: Relation<Team[]>;
 }

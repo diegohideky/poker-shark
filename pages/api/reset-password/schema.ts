@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const resetPasswordSchema = z.object({
+export const ResetPasswordSchema = z.object({
   username: z
     .string()
     .min(3, "Username must be at least 3 characters long")

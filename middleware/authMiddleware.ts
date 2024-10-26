@@ -20,8 +20,6 @@ export const authMiddleware = (handler: NextApiHandler) => {
     try {
       const decoded = verifyToken(token);
 
-      const connection = await dbConnect();
-
       const userRepository = dataSource.getRepository(User);
       const user = await userRepository.findOne({
         where: { id: decoded.id },
@@ -38,8 +36,6 @@ export const authMiddleware = (handler: NextApiHandler) => {
         ...user,
         roles: user.userRoles.map((userRole) => userRole.role.name), // Extract role names
       };
-
-      await connection.destroy();
 
       return handler(req, res);
     } catch (err) {
