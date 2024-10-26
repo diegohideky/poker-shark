@@ -3,7 +3,6 @@ import { verifyToken } from "@libs/jwt";
 import dataSource from "@db/data-source"; // Your data source connection
 import { User } from "@entities/User";
 import { AuthenticatedNextApiRequest } from "./types"; // Define this if needed for typed request
-import dbConnect from "@db/dbConnect";
 
 export const authMiddleware = (handler: NextApiHandler) => {
   return async (req: AuthenticatedNextApiRequest, res: NextApiResponse) => {
@@ -19,8 +18,6 @@ export const authMiddleware = (handler: NextApiHandler) => {
 
     try {
       const decoded = verifyToken(token);
-
-      const connection = await dbConnect();
 
       const userRepository = dataSource.getRepository(User);
       const user = await userRepository.findOne({
@@ -38,8 +35,6 @@ export const authMiddleware = (handler: NextApiHandler) => {
         ...user,
         roles: user.userRoles.map((userRole) => userRole.role.name), // Extract role names
       };
-
-      await connection.destroy();
 
       return handler(req, res);
     } catch (err) {

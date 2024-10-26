@@ -4,18 +4,17 @@ import { authMiddleware } from "@middleware/authMiddleware";
 import dataSource from "@db/data-source";
 import { validatePassword, encryptPassword } from "@libs/password"; // Assuming you have password comparison and encryption utilities
 import { z } from "zod";
-import { changePasswordSchema } from "./schema";
-import dbConnect from "@db/dbConnect";
+import { ChangePasswordSchema } from "./schema";
+import { dbMiddleware } from "@middleware/dbMiddleware";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const connection = await dbConnect();
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
   try {
     const { username, currentPassword, newPassword, passwordConfirmation } =
-      changePasswordSchema.parse(req.body);
+      ChangePasswordSchema.parse(req.body);
 
     if (newPassword !== passwordConfirmation) {
       return res
@@ -49,9 +48,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       message: "Error changing password",
       error: error instanceof z.ZodError ? error.errors : error.message,
     });
-  } finally {
-    await connection.close();
   }
 }
 
-export default authMiddleware(handler);
+export default dbMiddleware(authMiddleware(handler));

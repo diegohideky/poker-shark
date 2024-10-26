@@ -1,17 +1,18 @@
 import "reflect-metadata";
-import { NextApiRequest, NextApiResponse } from "next";
-import { User } from "../../../entities/User"; // Check if this alias is correct in your config
-import dbConnect from "../../../database/dbConnect";
-import dataSource from "../../../database/data-source";
-import bcrypt from "bcryptjs"; // For password encryption
-import { signupSchema } from "./schema";
+import { User } from "@entities/User";
+import dataSource from "@db/data-source";
+import { SignupSchema } from "./schema";
+import { encryptPassword } from "@libs/password";
+import { dbMiddleware } from "@middleware/dbMiddleware";
+import { UserNextApiRequest } from "types";
+import { NextApiResponse } from "next";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const parsed = signupSchema.safeParse(req.body);
+  const parsed = SignupSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.errors });
   }
@@ -22,34 +23,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: "Passwords do not match" });
   }
 
-  const connection = await dbConnect();
-
   try {
-    const userRepo = await dataSource.getRepository(User);
+    const userRepo = dataSource.getRepository(User);
 
-    // Check if the user already exists
     const existingUser = await userRepo.findOne({ where: { username } });
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await encryptPassword(password);
 
-    // Create a new user
     const newUser = userRepo.create({
       username,
       password: hashedPassword,
     });
 
-    // Save the user to the database
     await userRepo.save(newUser);
 
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
     return res.status(500).json({ error: "Internal server error" });
-  } finally {
-    await connection.destroy();
   }
-};
+}
+
+export default dbMiddleware(signupHandler);
