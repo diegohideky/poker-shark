@@ -6,6 +6,7 @@ import { UserRole } from "@entities/UserRole";
 
 import dotenv from "dotenv";
 import { Team } from "@entities/Team";
+import { TeamPlayer } from "@entities/TeamPlayer";
 
 // Load environment variables from .env file
 dotenv.config({ path: ".env.local" });
@@ -17,7 +18,7 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [User, Role, UserRole, Team],
+  entities: [User, Role, UserRole, Team, TeamPlayer],
   migrations: ["dist/migrations/*.ts"],
   synchronize: false, // Disable in production and use migrations instead
   logging: true,

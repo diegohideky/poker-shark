@@ -3,7 +3,7 @@ import { Team } from "@entities/Team";
 import { authMiddleware } from "@middleware/authMiddleware";
 import { authorize } from "@middleware/authorize";
 import dataSource from "@db/data-source";
-import { UpdateTeamSchema } from "./schema";
+import { UpdateTeamSchema } from "../schema";
 import { dbMiddleware } from "@middleware/dbMiddleware";
 import { UserNextApiRequest } from "types";
 
