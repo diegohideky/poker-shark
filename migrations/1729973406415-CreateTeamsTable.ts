@@ -41,18 +41,18 @@ export class CreateTeamsTable1729973406415 implements MigrationInterface {
           },
           {
             name: "createdAt",
-            type: "timestamp",
+            type: "timestamptz",
             default: "now()",
           },
           {
             name: "updatedAt",
-            type: "timestamp",
+            type: "timestamptz",
             default: "now()",
             onUpdate: "now()",
           },
           {
             name: "deletedAt",
-            type: "timestamp",
+            type: "timestamptz",
             isNullable: true,
           },
         ],

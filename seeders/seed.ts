@@ -1,7 +1,8 @@
 import "reflect-metadata";
+import AppDataSource from "@db/data-source";
 import { RoleSeeder } from "./RoleSeeder";
 import { UserSeeder } from "./UserSeeder";
-import AppDataSource from "@db/data-source";
+import { GameSeeder } from "./GameSeeder";
 
 const runSeeders = async () => {
   try {
@@ -10,6 +11,7 @@ const runSeeders = async () => {
 
     await RoleSeeder(AppDataSource);
     await UserSeeder(AppDataSource);
+    await GameSeeder(AppDataSource);
 
     console.log("Seeding completed!");
   } catch (error) {
