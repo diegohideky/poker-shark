@@ -5,7 +5,9 @@ import {
   TableForeignKey,
 } from "typeorm";
 
-export class CreateTeamsTable1729973406415 implements MigrationInterface {
+export class CreateTeamsPlayersTable1729973406415
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

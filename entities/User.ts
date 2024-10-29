@@ -23,6 +23,14 @@ export class User extends SoftDeleteEntity {
   @Column()
   password: string;
 
+  @Column({
+    type: "varchar",
+    length: 255,
+    nullable: true,
+    default: "user-picture-default.avif",
+  })
+  photoUrl: string | null;
+
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: Relation<UserRole[]>;
 

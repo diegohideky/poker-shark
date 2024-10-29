@@ -11,6 +11,7 @@
     "seed": "npx ts-node -r tsconfig-paths/register seeders/seed.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.682.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",

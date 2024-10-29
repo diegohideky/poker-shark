@@ -29,6 +29,11 @@ export class Team extends SoftDeleteEntity {
   @OneToMany(() => TeamPlayer, (teamPlayer) => teamPlayer.team)
   players: Relation<TeamPlayer[]>;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  photoUrl?: string;
+  @Column({
+    type: "varchar",
+    length: 255,
+    nullable: true,
+    default: "shield-default.jpeg",
+  })
+  photoUrl: string;
 }
