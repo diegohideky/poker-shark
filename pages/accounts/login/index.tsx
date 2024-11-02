@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { login } from "../service";
+import { login } from "@services/accounts";
 import { useUser } from "@contexts/UserContext";
 import { LoginSchema } from "pages/api/accounts/login/schema";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Import eye icons
