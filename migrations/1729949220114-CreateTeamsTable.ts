@@ -26,6 +26,12 @@ export class CreateTeamsTable1729949220114 implements MigrationInterface {
             isUnique: true,
           },
           {
+            name: "pageName",
+            type: "varchar",
+            isUnique: true,
+            isNullable: false,
+          },
+          {
             name: "ownerId",
             type: "uuid",
           },
@@ -33,7 +39,7 @@ export class CreateTeamsTable1729949220114 implements MigrationInterface {
             name: "photoUrl",
             type: "varchar",
             length: "255",
-            isNullable: true,
+            isNullable: false,
           },
           {
             name: "deletedAt",
@@ -51,6 +57,7 @@ export class CreateTeamsTable1729949220114 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "teams",
       new TableForeignKey({
+        name: "FK_ownerId",
         columnNames: ["ownerId"],
         referencedColumnNames: ["id"],
         referencedTableName: "users",

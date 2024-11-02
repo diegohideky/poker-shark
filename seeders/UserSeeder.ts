@@ -17,6 +17,7 @@ export const UserSeeder = async (dataSource: DataSource) => {
       name: process.env.ADMIN_USER_NAME,
       username: process.env.ADMIN_USER_USER_NAME,
       password: process.env.ADMIN_USER_PASSWORD, // Password to be hashed
+      photoUrl: "user-picture-default.avif",
       roles: adminRole ? [adminRole] : [],
     },
   ];
@@ -39,6 +40,7 @@ export const UserSeeder = async (dataSource: DataSource) => {
         name: user.name,
         username: user.username,
         password: hashedPassword, // Save the hashed password
+        photoUrl: user.photoUrl,
       });
       newUser = await userRepository.save(data);
       console.log(`Created user: ${newUser.username}`);

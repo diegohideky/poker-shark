@@ -34,6 +34,18 @@ export class CreateMatchesTable1730122649723 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: "buyIn",
+            type: "integer",
+            isNullable: true,
+            comment: "Buy-in value in cents",
+          },
+          {
+            name: "addOn",
+            type: "integer",
+            isNullable: true,
+            comment: "Add-on value in cents",
+          },
+          {
             name: "createdAt",
             type: "timestamptz",
             default: "now()",
