@@ -97,6 +97,6 @@ export class CreateMatchesPlayersTable1730125187801
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("match_players");
+    await queryRunner.dropTable("matches_players");
   }
 }

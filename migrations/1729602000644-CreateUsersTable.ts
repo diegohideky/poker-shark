@@ -24,6 +24,11 @@ export class CreateUsersTable1729602000644 implements MigrationInterface {
             type: "varchar",
           },
           {
+            name: "photoUrl",
+            type: "varchar",
+            isNullable: false,
+          },
+          {
             name: "name",
             type: "varchar",
           },

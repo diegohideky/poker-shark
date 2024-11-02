@@ -2,12 +2,24 @@ import { z } from "zod";
 
 export const TeamSchema = z.object({
   name: z.string().min(1),
-  photoUrl: z.string().url().optional(),
+  pageName: z
+    .string()
+    .min(1, "Page name is required")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Page name must only contain lowercase letters, numbers, and dashes"
+    ),
 });
 
 export const UpdateTeamSchema = z.object({
   name: z.string().min(1).optional(),
-  photoUrl: z.string().url().optional(),
+  pageName: z
+    .string()
+    .min(1, "Page name is required")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Page name must only contain lowercase letters, numbers, and dashes"
+    ),
 });
 
 export const FindTeamSchema = z.object({

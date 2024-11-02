@@ -1,3 +1,4 @@
+import fs from "fs";
 import { NextApiResponse } from "next";
 import { Team } from "@entities/Team";
 import { authMiddleware } from "@middleware/authMiddleware";
@@ -6,6 +7,15 @@ import dataSource from "@db/data-source";
 import { UpdateTeamSchema } from "../schema";
 import { dbMiddleware } from "@middleware/dbMiddleware";
 import { UserNextApiRequest } from "types";
+import { parseForm } from "@libs/formData";
+import { generateUniquePageNames } from "@libs/utils";
+import { uploadFileToS3 } from "@libs/uploader";
+
+export const config = {
+  api: {
+    bodyParser: false, // Important to disable Next.js body parser
+  },
+};
 
 async function handler(req: UserNextApiRequest, res: NextApiResponse) {
   const teamRepo = dataSource.getRepository(Team);
@@ -22,7 +32,15 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
       return res.status(500).json({ error: "Error fetching team" });
     }
   } else if (req.method === "PUT") {
-    const parsedBody = UpdateTeamSchema.safeParse(req.body);
+    const { fields, files } = await parseForm(req); // Await the promise
+    const name = fields.name ? fields.name[0] : null;
+    const pageName = fields.pageName ? fields.pageName[0] : null;
+    const imageFile = files.photo ? files.photo[0] : null;
+
+    const parsedBody = UpdateTeamSchema.safeParse({
+      name,
+      pageName,
+    });
     if (!parsedBody.success) {
       return res.status(400).json({ error: parsedBody.error });
     }
@@ -33,17 +51,46 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
         return res.status(404).json({ error: "Team not found" });
       }
 
-      if (parsedBody.data.name !== team.name) {
-        const existingTeam = await teamRepo.findOne({
-          where: { name: parsedBody.data.name },
-        });
+      const existingTeamByName = await teamRepo.findOne({
+        where: { name: parsedBody.data.name },
+      });
 
-        if (existingTeam) {
-          return res.status(400).json({ error: "Team already exists" });
-        }
+      if (existingTeamByName && existingTeamByName.id !== team.id) {
+        return res
+          .status(400)
+          .json({ error: "Another team already have this name" });
       }
 
-      teamRepo.merge(team, parsedBody.data);
+      const existingTeamByPageName = await teamRepo.findOne({
+        where: { pageName: parsedBody.data.pageName },
+      });
+      if (existingTeamByPageName && existingTeamByPageName.id !== team.id) {
+        const suggestions = await generateUniquePageNames(
+          req.body.name,
+          teamRepo
+        );
+        return res.status(400).json({
+          error: "Another team already have this page name",
+          suggestions,
+        });
+      }
+
+      const teamData = {
+        ...parsedBody.data,
+        photoUrl: team.photoUrl,
+      };
+
+      if (imageFile && imageFile.filepath) {
+        const fileBuffer = await fs.promises.readFile(imageFile.filepath);
+        const mimeType = imageFile.mimetype || "image/jpeg";
+        teamData.photoUrl = await uploadFileToS3(
+          fileBuffer,
+          imageFile.originalFilename,
+          mimeType
+        );
+      }
+
+      teamRepo.merge(team, teamData);
       const updatedTeam = await teamRepo.save(team);
       return res.status(200).json(updatedTeam);
     } catch (error) {
