@@ -7,12 +7,12 @@ const upload = multer({
     s3,
     bucket: process.env.S3_BUCKET_NAME,
     acl: "public-read",
-    key: (req, file, cb) => {
+    key: (_, file, cb) => {
       const fileName = file.originalname;
       cb(null, fileName);
     },
   }),
-  fileFilter: (req, file, cb) => {
+  fileFilter: (_, file, cb) => {
     // Restrict file types to images
     if (!file.mimetype.startsWith("image/")) {
       cb(new Error("Only image files are allowed"), false);
