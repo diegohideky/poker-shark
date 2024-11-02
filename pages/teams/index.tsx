@@ -1,7 +1,6 @@
 // pages/teams.tsx
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { getTeams } from "@services/teams";
 
 const PAGE_SIZE = 10; // Number of teams per page
@@ -13,8 +12,6 @@ export default function TeamsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalTeams, setTotalTeams] = useState(0);
-
-  const router = useRouter();
 
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
