@@ -51,3 +51,11 @@ export const PutTeamRequestSchema = z.object({
     accept: z.boolean({ required_error: "'accept' is required" }),
   }),
 });
+
+export const PaginationSchema = z.object({
+  offset: z.number().nonnegative().optional(),
+  limit: z.number().positive().optional(),
+  orderField: z.enum(["name", "type", "createdAt"]).optional(),
+  orderDirection: z.enum(["ASC", "DESC"]).optional(),
+  search: z.string().optional(),
+});

@@ -7,22 +7,49 @@ import { TeamPlayer } from "@entities/TeamPlayer";
 import { dbMiddleware } from "@middleware/dbMiddleware";
 import { UserNextApiRequest } from "types";
 import { TeamPlayerStatus } from "@entities/TeamPlayer";
-import { PostTeamRequestSchema } from "../../schema";
+import { PaginationSchema, PostTeamRequestSchema } from "../../schema";
 import { Role, RoleNames } from "@entities/Role";
 
 async function handler(req: UserNextApiRequest, res: NextApiResponse) {
-  const teamRepo = dataSource.getRepository(TeamPlayer);
+  const teamPlayerRepo = dataSource.getRepository(TeamPlayer);
   const roleRepo = dataSource.getRepository(Role);
   const { id: teamId } = req.query;
 
-  if (req.method === "POST") {
+  if (req.method === "GET") {
+    const parsed = PaginationSchema.safeParse(req.query);
+    if (!parsed.success) {
+      return res.status(400).json({ error: parsed.error });
+    }
+
+    const {
+      limit,
+      offset,
+      orderDirection = "DESC",
+      orderField = "createdAt",
+    } = parsed.data;
+
+    try {
+      const [requests, total] = await teamPlayerRepo.findAndCount({
+        where: { teamId: teamId as string },
+        skip: offset,
+        take: limit,
+        order: { [orderField]: orderDirection },
+        relations: ["user"],
+      });
+      return res.status(200).json({ requests, total });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ error: error.message || "Error fetching team requests." });
+    }
+  } else if (req.method === "POST") {
     try {
       const parsed = PostTeamRequestSchema.safeParse({ query: req.query });
       if (!parsed.success) {
         return res.status(400).json({ error: parsed.error });
       }
 
-      const existingRequest = await teamRepo.findOne({
+      const existingRequest = await teamPlayerRepo.findOne({
         where: { teamId: teamId as string, userId: req.user.id },
       });
 
@@ -36,13 +63,13 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
         where: { name: RoleNames.PLAYER },
       });
 
-      const newRequest = teamRepo.create({
+      const newRequest = teamPlayerRepo.create({
         teamId: teamId as string,
         userId: req.user.id,
         roleId: playerRole?.id,
         status: TeamPlayerStatus.PENDING,
       });
-      const savedRequest = await teamRepo.save(newRequest);
+      const savedRequest = await teamPlayerRepo.save(newRequest);
 
       return res.status(201).json(savedRequest);
     } catch (error) {
@@ -51,7 +78,7 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
         .json({ error: error.message || "Error requesting team access." });
     }
   } else {
-    res.setHeader("Allow", ["POST"]);
+    res.setHeader("Allow", ["POST", "GET"]);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
   }
 }

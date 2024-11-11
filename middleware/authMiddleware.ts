@@ -31,6 +31,8 @@ export const authMiddleware = (handler: NextApiHandler) => {
           .json({ message: "Unauthorized, user not found" });
       }
 
+      delete user.password;
+
       req.user = {
         ...user,
         roles: user.userRoles.map((userRole) => userRole.role.name), // Extract role names

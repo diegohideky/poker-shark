@@ -126,5 +126,5 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
 }
 
 export default dbMiddleware(
-  authMiddleware(authorize(["ADMIN", "TEAM ADMIN"])(handler))
+  authMiddleware(authorize(["ADMIN", "TEAM ADMIN", "PLAYER"])(handler))
 );

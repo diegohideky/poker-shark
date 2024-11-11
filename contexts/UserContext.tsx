@@ -1,4 +1,5 @@
 import { User } from "@entities/User";
+import { getCurrent } from "@services/accounts";
 import React, {
   createContext,
   useState,
@@ -12,6 +13,7 @@ interface UserContextProps {
   token: string | null;
   setUserData: (user: User | null) => void;
   setTokenData: (token: string | null) => void;
+  getCurrentUser: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -40,8 +42,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     localStorage.setItem("token", token);
   };
 
+  const getCurrentUser = async () => {
+    const current = await getCurrent();
+    setUserData(current);
+  };
+
   return (
-    <UserContext.Provider value={{ user, token, setUserData, setTokenData }}>
+    <UserContext.Provider
+      value={{ user, token, setUserData, setTokenData, getCurrentUser }}
+    >
       {children}
     </UserContext.Provider>
   );

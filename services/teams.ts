@@ -21,3 +21,62 @@ export const getTeams = async (params: PaginationParams) => {
 
   return response.data;
 };
+
+export const askForJoinTeam = async (teamId: string) => {
+  const token = localStorage.getItem("token");
+  const response = await api.post(
+    `${endpoint}/${teamId}/requests`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const getTeamRequests = async (teamId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.get(`${endpoint}/${teamId}/requests`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const approveRequest = async (teamId, userId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.put(
+    `${endpoint}/${teamId}/requests/${userId}`,
+    {
+      accept: true,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const declineRequest = async (teamId, userId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.put(
+    `${endpoint}/${teamId}/requests/${userId}`,
+    {
+      accept: false,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

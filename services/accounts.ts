@@ -9,3 +9,15 @@ export const login = async (username: string, password: string) => {
   });
   return response.data;
 };
+
+export const getCurrent = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await api.get(`${endpoint}/current`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

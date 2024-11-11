@@ -6,6 +6,8 @@ import { encryptPassword } from "@libs/password";
 import { dbMiddleware } from "@middleware/dbMiddleware";
 import { UserNextApiRequest } from "types";
 import { NextApiResponse } from "next";
+import { Role, RoleNames } from "@entities/Role";
+import { UserRole } from "@entities/UserRole";
 
 async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -25,11 +27,17 @@ async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
 
   try {
     const userRepo = dataSource.getRepository(User);
+    const roleRepo = dataSource.getRepository(Role);
+    const userRoleRepo = dataSource.getRepository(UserRole);
 
     const existingUser = await userRepo.findOne({ where: { username } });
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
+
+    const playerRole = await roleRepo.findOne({
+      where: { name: RoleNames.PLAYER },
+    });
 
     const hashedPassword = await encryptPassword(password);
 
@@ -37,9 +45,15 @@ async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
       name,
       username,
       password: hashedPassword,
+      photoUrl: "user-picture-default.avif",
     });
 
     const user = await userRepo.save(newUser);
+    const newUserRole = userRoleRepo.create({
+      userId: user.id,
+      roleId: playerRole.id,
+    });
+    await userRoleRepo.save(newUserRole);
 
     return res
       .status(201)
