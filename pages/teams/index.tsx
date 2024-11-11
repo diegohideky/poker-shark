@@ -84,6 +84,7 @@ export default function TeamsPage() {
 
   const handleLeaveTeam = (teamId) => {
     // Leave team logic
+    console.log({ teamId });
   };
 
   const goToRequests = (teamid) => {

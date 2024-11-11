@@ -17,6 +17,8 @@ export default function TeamRequestsPage() {
   const router = useRouter();
   const { id: teamId } = router.query;
 
+  console.log({ total });
+
   const fetchRequests = async () => {
     setLoading(true);
     try {
