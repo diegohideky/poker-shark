@@ -42,6 +42,8 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
     `Poker Table ${new Date().toISOString().split("T")[0]}`
   );
 
+  console.log({ total });
+
   useEffect(() => {
     const fetchGames = async () => {
       try {
