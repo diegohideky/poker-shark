@@ -102,6 +102,7 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
           'tp.id as "teamPlayerId"',
           'u.id AS "userId"',
           'u.name AS "name"',
+          'u.photoUrl AS "photoUrl"',
           'u.username AS "username"',
           'mp.id AS "matchPlayerId"',
           'mp.score AS "score"',
@@ -123,6 +124,7 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
               id: row.userId,
               name: row.name,
               username: row.username,
+              photoUrl: row.photoUrl,
             }
           : null,
         matchPlayer: row.matchPlayerId

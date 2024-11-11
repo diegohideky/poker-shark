@@ -80,3 +80,8 @@ export const declineRequest = async (teamId, userId) => {
 
   return response.data;
 };
+
+export const getTeamsByPageName = async (pageName) => {
+  const response = await api.get(`${endpoint}/page-name/${pageName}`);
+  return response.data;
+};
