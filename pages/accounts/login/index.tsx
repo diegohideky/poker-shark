@@ -18,7 +18,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false); // Loading state
   const [showPassword, setShowPassword] = useState(false); // Password visibility state
 
-  const { setTokenData } = useUser();
+  const { setTokenData, getCurrentUser } = useUser();
 
   const {
     register,
@@ -34,6 +34,9 @@ const LoginPage = () => {
     try {
       const result = await login(data.username, data.password);
       setTokenData(result.token);
+
+      await getCurrentUser();
+
       router.push("/"); // Redirect after successful login
     } catch (err: any) {
       setError(err.message);
