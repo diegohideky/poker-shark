@@ -15,7 +15,7 @@ export const PLAYERS = {
     image: "/players/Demori.png",
   },
   Diego: {
-    image: "/players/Diego.jpeg",
+    image: "/players/Diego.png",
   },
   Eder: {
     image: "/players/Eder.png",
@@ -36,7 +36,7 @@ export const PLAYERS = {
     image: "/players/Giu.png",
   },
   Glauco: {
-    image: "/players/Glauco2.jpeg",
+    image: "/players/Glauco.jpeg",
   },
   Gustavo: {
     image: "/players/Gustavo.png",
