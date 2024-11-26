@@ -8,15 +8,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { login } from "@services/accounts";
 import { useUser } from "@contexts/UserContext";
 import { LoginSchema } from "pages/api/accounts/login/schema";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Import eye icons
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import Typography from "@components/Typography";
+import LoadingOverlay from "@components/LoadingOverlay";
 
 type LoginForm = z.infer<typeof LoginSchema>;
 
 const LoginPage = () => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // Loading state
-  const [showPassword, setShowPassword] = useState(false); // Password visibility state
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { setTokenData, getCurrentUser } = useUser();
 
@@ -30,33 +32,40 @@ const LoginPage = () => {
 
   const onSubmit = async (data: LoginForm) => {
     setError(null);
-    setLoading(true); // Start loading state
+    setLoading(true);
     try {
       const result = await login(data.username, data.password);
       setTokenData(result.token);
-
       await getCurrentUser();
-
-      router.push("/"); // Redirect after successful login
+      router.push("/");
     } catch (err: any) {
       setError(err.message);
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <main
+      className="flex items-center justify-center min-h-screen" // Poker table green background
+    >
+      <LoadingOverlay isLoading={loading} />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded shadow-md w-full max-w-sm"
+        className="bg-slate-900 p-6 rounded-lg shadow-lg w-full max-w-sm border border-gray-800 flex flex-col gap-2"
       >
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <Typography variant="title" className="text-gray-50	mb-4 text-center">
+          Poker Shark
+        </Typography>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {error && (
+          <Typography variant="body" className="text-red-500 mb-4">
+            {error}
+          </Typography>
+        )}
 
         <div className="mb-4">
-          <label className="block text-gray-700" htmlFor="username">
+          <label className="block text-gray-50" htmlFor="username">
             Username
           </label>
           <input
@@ -64,16 +73,18 @@ const LoginPage = () => {
             id="username"
             {...register("username")}
             className={`mt-1 block w-full border ${
-              errors.username ? "border-red-500" : "border-gray-300"
-            } rounded-md p-2`}
+              errors.username ? "border-red-500" : "border-yellow-400"
+            } rounded-md p-2 text-black-50`}
           />
           {errors.username && (
-            <p className="text-red-500 text-sm">{errors.username.message}</p>
+            <Typography variant="body" className="text-red-500 text-sm">
+              {errors.username.message}
+            </Typography>
           )}
         </div>
 
         <div className="mb-4 relative">
-          <label className="block text-gray-700" htmlFor="password">
+          <label className="block text-gray-50" htmlFor="password">
             Password
           </label>
           <input
@@ -81,8 +92,8 @@ const LoginPage = () => {
             id="password"
             {...register("password")}
             className={`mt-1 block w-full border ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            } rounded-md p-2`}
+              errors.password ? "border-red-500" : "border-yellow-400"
+            } rounded-md p-2 text-black-50`}
           />
           <div
             className="absolute right-2 top-10 cursor-pointer"
@@ -95,41 +106,31 @@ const LoginPage = () => {
             )}
           </div>
           {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+            <Typography variant="body" className="text-red-500 text-sm">
+              {errors.password.message}
+            </Typography>
           )}
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 transition duration-200 flex items-center justify-center"
-          disabled={loading} // Disable button during loading
+          className="w-full bg-blue-600 text-gray-50 rounded-md p-2 hover:bg-yellow-600 transition duration-200 flex items-center justify-center"
+          disabled={loading}
         >
-          {loading ? (
-            <svg
-              className="animate-spin h-5 w-5 mr-2 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8H4z"
-              ></path>
-            </svg>
-          ) : null}
-          {loading ? "Loading..." : "Login"}
+          Login
         </button>
+
+        <div>
+          {/* add a sinup link button */}
+          <button
+            className="text-gray-50 hover:text-yellow-400 transition duration-200"
+            onClick={() => router.push("/accounts/signup")}
+          >
+            Don&apos;t have an account? Sign up
+          </button>
+        </div>
       </form>
-    </div>
+    </main>
   );
 };
 

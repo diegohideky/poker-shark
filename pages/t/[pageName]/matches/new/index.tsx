@@ -1,18 +1,17 @@
 // pages/t/[pageName]/new-match.tsx
 import { GetServerSideProps } from "next";
 import { getTeamsByPageName } from "@services/teams";
-import { getGames } from "@services/games"; // Import your getGames function
-import { createMatch } from "@services/matches"; // Import your createMatch function
+import { getGames } from "@services/games";
+import { createMatch } from "@services/matches";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { z } from "zod"; // Import Zod
-import { toast } from "react-toastify"; // Import a notification library if desired
+import { z } from "zod";
+import { toast } from "react-toastify";
 import { GameTypes } from "@entities/Game";
 
-// Define Zod schema for validation
 const matchSchema = z.object({
   gameId: z.string().nonempty("Game Type is required"),
   datetime: z.date(),
@@ -36,21 +35,17 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
   const [gameType, setGameType] = useState<string>(gameTypes[0]);
   const [gameId, setGameId] = useState<string>("");
   const [games, setGames] = useState<{ id: string; name: string }[]>([]);
-  const [total, setTotal] = useState<number>(0);
   const [datetime, setDatetime] = useState<Date>(new Date());
   const [name, setName] = useState<string>(
     `Poker Table ${new Date().toISOString().split("T")[0]}`
   );
 
-  console.log({ total });
-
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const { total, data } = await getGames({});
+        const { data } = await getGames({});
         setGames(data);
-        setTotal(total);
-        setGameId(data[0].id);
+        setGameId(data[0]?.id || "");
       } catch (error) {
         console.error("Error fetching games:", error);
       }
@@ -62,173 +57,164 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
     return <div>Team not found</div>;
   }
 
-  const handleGameIdChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setGameId(e.target.value);
-  };
-
-  const handleGameTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setGameType(e.target.value);
-  };
-
-  const handleMatchNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
-
   const handleSubmit = async () => {
     try {
-      // Validate form data using Zod
       const validatedData = matchSchema.parse({
         gameId,
         datetime,
         name,
         gameType,
       });
-
-      // Call createMatch function with the validated data
       const result = await createMatch({
         teamId: team.id,
         gameId: validatedData.gameId,
         datetime: validatedData.datetime,
         name: validatedData.name,
       });
-
-      // Redirect or show success message
       toast.success("Match created successfully!");
       navigate.push(`/t/${team.pageName}/m/${result.id}`);
     } catch (error) {
-      console.log({ error });
       if (error instanceof z.ZodError) {
-        // Handle validation errors
         error.errors.forEach((err) => toast.error(err.message));
       } else {
-        // Handle other errors
-        console.error("Error creating match:", error);
         toast.error("Failed to create match. Please try again.");
       }
     }
   };
 
   return (
-    <>
+    <main className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
       <Head>
         <title>{team.name} - New Match</title>
         <meta name="description" content={`New Match for ${team.name}`} />
       </Head>
 
-      <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">
-          Create New Match for {team.name}
+      <div className="bg-white shadow-lg rounded-lg w-full max-w-4xl p-6 sm:p-8">
+        {/* Team Info and Navigation */}
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-6 space-y-4 sm:space-y-0">
+          <div className="flex items-center space-x-4">
+            {team.photoUrl && (
+              <img
+                src={`${
+                  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
+                }/files/${team.photoUrl}`}
+                alt={team.name}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            )}
+            <span className="text-lg font-semibold text-center sm:text-left">
+              {team.name}
+            </span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button
+              onClick={() => navigate.push(`/t/${team.pageName}/players`)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white w-full sm:w-auto"
+            >
+              Players
+            </button>
+            <button
+              onClick={() => navigate.push(`/t/${team.pageName}/ranking`)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white w-full sm:w-auto"
+            >
+              Ranking
+            </button>
+            <button
+              onClick={() => navigate.push(`/t/${team.pageName}/matches`)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white w-full sm:w-auto"
+            >
+              Matches
+            </button>
+          </div>
+        </div>
+
+        <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">
+          Create New Match
         </h1>
 
-        {/* Game Selector */}
-        <div className="mb-4">
-          <label
-            htmlFor="gameId"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Game
-          </label>
-          <select
-            id="gameId"
-            value={gameId}
-            onChange={handleGameIdChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-            <option value="">Select a game</option>
-            {games.map((game) => (
-              <option key={game.id} value={game.id}>
-                {game.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Form Fields */}
+        <div className="grid gap-6">
+          {/* Game Selector */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Game
+            </label>
+            <select
+              value={gameId}
+              onChange={(e) => setGameId(e.target.value)}
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              {games.map((game) => (
+                <option key={game.id} value={game.id}>
+                  {game.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Game Type Selector */}
-        <div className="mb-4">
-          <label
-            htmlFor="gameId"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Type
-          </label>
-          <select
-            id="gameType"
-            value={gameType}
-            onChange={handleGameTypeChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-            <option value="">Select a type</option>
-            {gameTypes.map((gameType) => (
-              <option key={gameType} value={gameType}>
-                {gameType}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Game Type Selector */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Game Type
+            </label>
+            <select
+              value={gameType}
+              onChange={(e) => setGameType(e.target.value)}
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              {gameTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Date Picker */}
-        <div className="mb-4">
-          <label
-            htmlFor="datetime"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Match Date
-          </label>
-          <DatePicker
-            selected={datetime}
-            onChange={(date: Date) => setDatetime(date)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-        </div>
+          {/* Date Picker */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Match Date
+            </label>
+            <DatePicker
+              selected={datetime}
+              onChange={(date: Date) => setDatetime(date)}
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
 
-        {/* Match Name Input */}
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Match Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={handleMatchNameChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
+          {/* Match Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Match Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
         </div>
 
         {/* Submit Button */}
-        <button
-          onClick={handleSubmit}
-          className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Create Match
-        </button>
+        <div className="mt-6">
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md"
+          >
+            Create Match
+          </button>
+        </div>
       </div>
-    </>
+    </main>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { pageName } = context.params as { pageName: string };
 
-  try {
-    const team = await getTeamsByPageName(pageName);
-
-    return {
-      props: {
-        team,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching team data:", error);
-    return {
-      props: {
-        team: null,
-      },
-    };
-  }
+  const team = await getTeamsByPageName(pageName);
+  return { props: { team: team || null } };
 };
 
 export default NewMatchPage;
