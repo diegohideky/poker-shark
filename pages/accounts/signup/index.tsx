@@ -136,6 +136,7 @@ const SignupPage: React.FC = () => {
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
+            {/* here */}
             <FontAwesomeIcon
               //@ts-ignore
               icon={showPasswordConfirmation ? faEyeSlash : faEye}
