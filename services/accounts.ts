@@ -21,3 +21,20 @@ export const getCurrent = async () => {
 
   return response.data;
 };
+
+export const signup = async (
+  name: string,
+  username: string,
+  email: string,
+  password: string,
+  passwordConfirmation: string
+) => {
+  const response = await api.post(`${endpoint}/signup`, {
+    name,
+    username,
+    email,
+    password,
+    passwordConfirmation,
+  });
+  return response.data;
+};
