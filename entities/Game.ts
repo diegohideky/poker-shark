@@ -15,5 +15,8 @@ export class Game extends SoftDeleteEntity {
   name: string;
 
   @Column()
+  nickname: string;
+
+  @Column()
   type: string;
 }

@@ -22,9 +22,9 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
 
   if (req.method === "POST") {
     const { fields, files } = await parseForm(req); // Await the promise
-    const name = fields.name ?? fields.name[0];
-    const pageName = fields.pageName ?? fields.pageName[0];
-    const imageFile = files.photo ?? files.photo[0];
+    const name = fields.name ? fields.name[0] : null;
+    const pageName = fields.pageName ? fields.pageName[0] : null;
+    const imageFile = files.photo ? files.photo[0] : null;
 
     const parsedBody = TeamSchema.safeParse({ name, pageName });
     if (!parsedBody.success) {

@@ -12,6 +12,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import LoadingOverlay from "@components/LoadingOverlay";
+import { showErrorToast, showSuccessToast } from "@libs/utils";
 
 const PAGE_SIZE = 10; // Number of teams per page
 
@@ -19,7 +21,7 @@ export default function TeamsPage() {
   const { user, getCurrentUser } = useUser();
   const [teams, setTeams] = useState([]);
   const [filteredTeams, setFilteredTeams] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalTeams, setTotalTeams] = useState(0);
@@ -27,7 +29,7 @@ export default function TeamsPage() {
   const navigate = useRouter();
 
   const fetchTeams = async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const result = await getTeams({
         offset: (currentPage - 1) * PAGE_SIZE,
@@ -39,7 +41,7 @@ export default function TeamsPage() {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -80,12 +82,12 @@ export default function TeamsPage() {
   const handleJoinTeam = async (teamId: string): Promise<void> => {
     try {
       await askForJoinTeam(teamId);
-      alert("Solicitação enviada com sucesso!");
+      showSuccessToast("Invitation sent successfully!");
       await getCurrentUser();
       fetchTeams();
     } catch (error) {
       console.error(error);
-      alert("Erro ao enviar solicitação. Tente novamente mais tarde.");
+      showErrorToast("Error to send invitation. Try again later.");
     }
   };
 
@@ -103,6 +105,7 @@ export default function TeamsPage() {
 
   return (
     <main className="p-4 min-h-screen text-gray-100">
+      <LoadingOverlay isLoading={isLoading} />
       <h1 className="text-3xl font-bold mb-6 text-center">Teams</h1>
       <input
         type="text"
@@ -112,21 +115,20 @@ export default function TeamsPage() {
         className="w-full p-2 mb-6 text-gray-800 rounded-lg border border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
       />
 
-      {loading ? (
-        <div className="flex justify-center mt-10">
-          <span>Loading...</span>
-        </div>
-      ) : (
-        <div>
-          {filteredTeams.length > 0 ? (
-            <ul className="space-y-4">
-              {filteredTeams.map((team) => {
-                const teamStatus = getTeamStatus(team.id);
+      <div>
+        {filteredTeams.length > 0 ? (
+          <ul className="space-y-4">
+            {filteredTeams.map((team) => {
+              const teamStatus = getTeamStatus(team.id);
 
-                return (
-                  <li
-                    key={team.id}
-                    className="p-4 bg-gray-800 rounded-lg flex items-center gap-4 shadow-md"
+              return (
+                <li
+                  key={team.id}
+                  className="p-4 bg-gray-800 rounded-lg flex justify-between gap-4 shadow-md"
+                >
+                  <div
+                    className="flex items-center gap-2 font-medium text-lg cursor-pointer"
+                    onClick={() => goToTeamPage(team.pageName)}
                   >
                     <img
                       src={`${
@@ -136,16 +138,13 @@ export default function TeamsPage() {
                       alt={`${team.name} logo`}
                       className="w-14 h-14 rounded-full border-2 border-yellow-500"
                     />
-                    <span
-                      className="flex-grow font-medium text-lg cursor"
-                      onClick={() => goToTeamPage(team.pageName)}
-                    >
-                      {team.name}
-                    </span>
+                    <span>{team.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
                     {team.ownerId === user.id && (
                       <button
                         onClick={() => goToRequests(team.id)}
-                        className="p-2 bg-blue-600 rounded-full text-gray-100 hover:bg-blue-500"
+                        className="p-2 bg-blue-600 rounded-full text-gray-100 hover:bg-blue-500 cursor-pointer"
                         aria-label="View Invites"
                       >
                         <FontAwesomeIcon icon={faEnvelope as IconProp} />
@@ -154,7 +153,7 @@ export default function TeamsPage() {
                     {teamStatus === "Join Team" && (
                       <button
                         onClick={() => handleJoinTeam(team.id)}
-                        className="p-2 bg-green-600 rounded-full text-gray-100 hover:bg-green-500"
+                        className="p-2 bg-green-600 rounded-full text-gray-100 hover:bg-green-500 cursor-pointer"
                         aria-label="Join Team"
                       >
                         <FontAwesomeIcon icon={faRightToBracket as IconProp} />
@@ -163,7 +162,7 @@ export default function TeamsPage() {
                     {teamStatus === "Leave Team" && (
                       <button
                         onClick={() => handleLeaveTeam(team.id)}
-                        className="p-2 bg-red-600 rounded-full text-gray-100 hover:bg-red-500"
+                        className="p-2 bg-red-600 rounded-full text-gray-100 hover:bg-red-500 cursor-pointer"
                         aria-label="Leave Team"
                       >
                         <FontAwesomeIcon
@@ -179,36 +178,36 @@ export default function TeamsPage() {
                         <FontAwesomeIcon icon={faCheckCircle as IconProp} />
                       </span>
                     )}
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <div className="text-center">No teams found.</div>
-          )}
-          <div className="mt-6 flex justify-between items-center">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
-              className="px-4 py-2 bg-gray-700 rounded text-gray-100 disabled:opacity-50"
-              aria-label="Previous Page"
-            >
-              Previous
-            </button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
-              className="px-4 py-2 bg-gray-700 rounded text-gray-100 disabled:opacity-50"
-              aria-label="Next Page"
-            >
-              Next
-            </button>
-          </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <div className="text-center">No teams found.</div>
+        )}
+        <div className="mt-6 flex justify-between items-center">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="px-4 py-2 bg-gray-700 rounded text-gray-100 disabled:opacity-50"
+            aria-label="Previous Page"
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="px-4 py-2 bg-gray-700 rounded text-gray-100 disabled:opacity-50"
+            aria-label="Next Page"
+          >
+            Next
+          </button>
         </div>
-      )}
+      </div>
     </main>
   );
 }

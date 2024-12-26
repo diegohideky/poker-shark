@@ -10,6 +10,7 @@ import { IoIosAdd } from "react-icons/io";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { BLINDS } from "libs/items";
 import styles from "@styles/Home.module.css";
+import { showErrorToast } from "@libs/utils";
 
 const titulo = "Poker Shark's Clock";
 const descricao =
@@ -103,7 +104,7 @@ export default function Home() {
         (blind) => blind.smallError || blind.bigError || blind.durationError
       )
     ) {
-      alert("Preencha todos os campos");
+      showErrorToast("Preencha todos os campos");
       return;
     }
 

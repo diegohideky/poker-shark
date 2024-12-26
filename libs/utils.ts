@@ -1,5 +1,6 @@
 import { Team } from "@entities/Team";
 import { Repository } from "typeorm";
+import { toast } from "react-toastify";
 
 export async function generateUniquePageNames(
   name: string,
@@ -29,3 +30,35 @@ export async function generateUniquePageNames(
     ? generateUniquePageNames(name, teamRepo, suggestions, attempts + 1)
     : suggestions;
 }
+
+export const showSuccessToast = (message: string) => {
+  toast.success(message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeButton: true,
+    draggable: true,
+  });
+};
+
+// Function to show error toast
+export const showErrorToast = (message: string) => {
+  toast.error(message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeButton: true,
+    draggable: true,
+  });
+};
+
+// Function to show info toast
+export const showInfoToast = (message: string) => {
+  toast.info(message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeButton: true,
+    draggable: true,
+  });
+};

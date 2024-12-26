@@ -6,16 +6,21 @@ export const GameSeeder = async (dataSource: DataSource) => {
   const gameRepository = dataSource.getRepository(Game);
 
   const games = [
-    { name: "Poker Texas Hold'em No Limit", type: "CASH" },
-    { name: "Poker Texas Hold'em No Limit", type: "TOURNAMENT" },
-    { name: "Poker Pot Limit Omaha", type: "CASH" },
-    { name: "Poker Pot Limit Omaha", type: "TOURNAMENT" },
+    { name: "Poker Texas Hold'em No Limit", nickname: "NLH", type: "CASH" },
+    {
+      name: "Poker Texas Hold'em No Limit",
+      nickname: "NLH",
+      type: "TOURNAMENT",
+    },
+    { name: "Poker Pot Limit Omaha", nickname: "PLO", type: "CASH" },
+    { name: "Poker Pot Limit Omaha", nickname: "PLO", type: "TOURNAMENT" },
   ];
 
   for (const game of games) {
     let newGame = null;
     const existingGame = await gameRepository.findOneBy({
       name: game.name,
+      nickname: game.nickname,
       type: game.type,
     });
 
@@ -26,6 +31,7 @@ export const GameSeeder = async (dataSource: DataSource) => {
     } else {
       const data = gameRepository.create({
         name: game.name,
+        nickname: game.nickname,
         type: game.type,
       });
       newGame = await gameRepository.save(data);

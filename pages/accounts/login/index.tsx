@@ -37,7 +37,7 @@ const LoginPage = () => {
       const result = await login(data.username, data.password);
       setTokenData(result.token);
       await getCurrentUser();
-      router.push("/");
+      router.push("/teams");
     } catch (err: any) {
       setError(err.message);
     } finally {

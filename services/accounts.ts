@@ -38,3 +38,42 @@ export const signup = async (
   });
   return response.data;
 };
+
+export const changePassword = async (
+  username: string,
+  currentPassword: string,
+  newPassword: string,
+  passwordConfirmation: string
+) => {
+  const token = localStorage.getItem("token");
+
+  const response = await api.post(
+    `${endpoint}/change-password`,
+    {
+      username,
+      currentPassword,
+      newPassword,
+      passwordConfirmation,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const updatePhoto = async (formData: FormData) => {
+  const token = localStorage.getItem("token");
+
+  const response = await api.patch(`${endpoint}/change-photo`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
