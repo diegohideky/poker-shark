@@ -100,6 +100,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     .andWhere("m.datetime <= :endDate", { endDate: lastMatch.datetime })
     .select([
       'u.id AS "userId"',
+      'u.photoUrl as "photoUrl"',
       "MAX(u.name) AS name",
       "SUM(mp.score) AS score",
       "COUNT(mp.id) AS matches",
@@ -126,6 +127,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     })
     .select([
       'u.id AS "userId"',
+      'u.photoUrl as "photoUrl"',
       "MAX(u.name) AS name",
       "SUM(mp.score) AS score",
       "COUNT(mp.id) AS matches",
@@ -160,6 +162,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     return {
       name: current.name,
+      photoUrl: current.photoUrl,
       score: score / 100,
       formattedScore: score / 100, // Formats as R$ 1.614,00
       matches: Number(current.matches),

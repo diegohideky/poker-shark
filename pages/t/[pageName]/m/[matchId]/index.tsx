@@ -5,10 +5,12 @@ import {
   getMatchPlayers,
   updateMatchPlayer,
   createMatchPlayer,
+  getMatchById,
 } from "@services/matches";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import { Match } from "@entities/Match";
 
 interface Player {
   id: string;
@@ -40,6 +42,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [totalPlayers, setTotalPlayers] = useState<number>(0);
   const [scores, setScores] = useState<{ [key: string]: string }>({});
+  const [match, setMatch] = useState<Match | null>(null);
   const navigate = useRouter();
 
   const fetchPlayers = async () => {
@@ -63,9 +66,24 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
     }
   };
 
+  const getMatch = async () => {
+    if (matchId) {
+      try {
+        const response = await getMatchById(matchId);
+        setMatch(response);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchPlayers();
   }, [team]);
+
+  useEffect(() => {
+    getMatch();
+  }, [matchId]);
 
   const formatScore = (value: number): string => {
     const isNegative = value < 0;
@@ -126,14 +144,14 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
     if (player.matchPlayer?.id) {
       try {
         await updateMatchPlayer(player.user.id, matchId, score);
-        fetchPlayers();
+        // fetchPlayers();
       } catch (error) {
         console.error(`Error updating match player ${player.id}:`, error);
       }
     } else {
       try {
         await createMatchPlayer(player.user.id, matchId, score);
-        fetchPlayers();
+        // fetchPlayers();
       } catch (error) {
         console.error(`Error creating match player ${player.id}:`, error);
       }
@@ -210,7 +228,9 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
           </button>
           <button
             className="bg-yellow-500 hover:bg-yellow-600 text-white-900 font-bold py-3 px-6 rounded-lg w-48 shadow-lg"
-            onClick={() => goTo(`/t/${team.pageName}/matches/new`)}
+            onClick={() =>
+              goTo(`/t/${team.pageName}/g/${match.gameId}/matches/new`)
+            }
           >
             Create New Match
           </button>

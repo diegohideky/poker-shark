@@ -5,6 +5,7 @@
     "dev": "next dev",
     "start": "next start",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d database/data-source.ts",
+    "migration:show": "npm run typeorm migration:show",
     "migration:create": "npx typeorm migration:create",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert",

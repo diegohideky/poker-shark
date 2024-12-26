@@ -18,6 +18,10 @@ export class CreateGamesTable1729976767099 implements MigrationInterface {
             type: "varchar",
           },
           {
+            name: "nickname",
+            type: "varchar",
+          },
+          {
             name: "type",
             type: "varchar",
           },

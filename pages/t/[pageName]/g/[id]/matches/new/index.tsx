@@ -60,7 +60,6 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
     const fetchGameById = async () => {
       const selectedGame = games.find((game) => game.id === queryGameId);
       setGameId(selectedGame.id);
-      setName(selectedGame.name || name);
       setGameType(selectedGame.type || gameTypes[0]);
     };
 
@@ -68,6 +67,12 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
       fetchGameById();
     }
   }, [queryGameId, gameTypes, games]);
+
+  useEffect(() => {
+    if (datetime) {
+      setName(`Poker Table ${datetime.toISOString().split("T")[0]}`);
+    }
+  }, [datetime]);
 
   if (!team) {
     return <div>Team not found</div>;

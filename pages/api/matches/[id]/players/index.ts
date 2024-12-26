@@ -81,8 +81,8 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
     const {
       offset = 0,
       limit = 10,
-      orderField = "position",
-      orderDirection = "ASC",
+      // orderField = "name",
+      // orderDirection = "ASC",
     } = query.data;
 
     try {
@@ -109,7 +109,10 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
           'mp.position AS "position"',
           'mp.status AS "status"',
         ])
-        .orderBy(`${orderField}`, orderDirection)
+        .orderBy({
+          "mp.position": "ASC",
+          "u.name": "ASC",
+        })
         .getRawMany();
 
       const totalCount = await teamPlayerRepo

@@ -83,7 +83,7 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                 >
                   {/* Game Details */}
                   <div>
-                    <p className="text-lg font-medium">{game.name}</p>
+                    <p className="text-lg font-medium">{game.nickname}</p>
                     <p className="text-gray-400 text-sm">{game.type}</p>
                   </div>
 
@@ -97,7 +97,6 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                       className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded"
                     >
                       <FaPlus className="mr-1" />
-                      Match
                     </button>
 
                     {/* View Matches */}
@@ -108,7 +107,6 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                       className="flex items-center bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded"
                     >
                       <FaEye className="mr-1" />
-                      Matches
                     </button>
 
                     {/* Ranking */}
@@ -119,7 +117,6 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                       className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded"
                     >
                       <FaChartLine className="mr-1" />
-                      Ranking
                     </button>
                   </div>
                 </li>

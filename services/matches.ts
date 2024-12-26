@@ -1,3 +1,4 @@
+import { Match } from "@entities/Match";
 import api from "@libs/api";
 
 const endpoint = "/matches";
@@ -82,5 +83,15 @@ export const updateMatchPlayer = async (
       },
     }
   );
+  return response.data;
+};
+
+export const getMatchById = async (matchId: string): Promise<Match> => {
+  const token = localStorage.getItem("token");
+  const response = await api.get(`${endpoint}/${matchId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
