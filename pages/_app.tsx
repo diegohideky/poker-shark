@@ -4,8 +4,8 @@ import "reflect-metadata";
 import "@styles/globals.css";
 import { UserProvider } from "@contexts/UserContext";
 import { useRouter } from "next/router";
-import BottomNavBar from "@components/BottomNavBar"; // Adjust the import path as needed
-import ToastContainer from "@components/ToastContainer";
+import BottomNavBar from "../components/BottomNavbar"; // Adjust the import path as needed
+import ToastContainer from "../components/ToastContainer";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
