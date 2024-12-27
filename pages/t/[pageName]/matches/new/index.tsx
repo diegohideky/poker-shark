@@ -97,7 +97,7 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
               <img
                 src={`${
                   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
-                }/files/${team.photoUrl}`}
+                }/files/${team.photoUrl || "shield-default.jpeg"}`}
                 alt={team.name}
                 className="w-12 h-12 rounded-full object-cover"
               />

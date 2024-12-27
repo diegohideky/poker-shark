@@ -10,8 +10,15 @@ export const MatchSchema = z.object({
 export const MatchUpdateSchema = MatchSchema.partial();
 
 export const MatchPaginationSchema = z.object({
-  offset: z.number().nonnegative().optional(),
-  limit: z.number().positive().optional(),
+  // expect a number or string and convert a string to number
+  offset: z
+    .string()
+    .transform((val) => parseInt(val as string))
+    .optional(),
+  limit: z
+    .string()
+    .transform((val) => parseInt(val as string))
+    .optional(),
   orderField: z.enum(["name", "datetime", "createdAt"]).optional(),
   orderDirection: z.enum(["ASC", "DESC"]).optional(),
   search: z.string().optional(),

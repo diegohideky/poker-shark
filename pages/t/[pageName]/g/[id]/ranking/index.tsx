@@ -149,7 +149,7 @@ export default function Home({ team }): React.FC<TeamProps> {
   };
 
   return (
-    <div className="mb-[5rem]">
+    <div>
       <Head>
         <title>{titulo}</title>
         <meta name="description" content={descricao} />
@@ -257,7 +257,7 @@ export default function Home({ team }): React.FC<TeamProps> {
                       src={`${
                         process.env.NEXT_PUBLIC_API_URL ||
                         "http://localhost:3000/api"
-                      }/files/${item?.photoUrl}`}
+                      }/files/${item?.photoUrl || "user-picture-default.avif"}`}
                       alt="Poker Shark"
                     />
                     <RankingBadge

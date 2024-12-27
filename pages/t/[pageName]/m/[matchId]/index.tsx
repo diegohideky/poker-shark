@@ -193,7 +193,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
             <img
               src={`${
                 process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
-              }/files/${team.photoUrl}`}
+              }/files/${team.photoUrl || "shield-default.jpeg"}`}
               alt={`${team.name} logo`}
               className="rounded-full w-24 h-24 object-cover"
             />
@@ -254,7 +254,9 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                         src={`${
                           process.env.NEXT_PUBLIC_API_URL ||
                           "http://localhost:3000/api"
-                        }/files/${player.user.photoUrl}`}
+                        }/files/${
+                          player.user.photoUrl || "user-picture-default.avif"
+                        }`}
                         alt={`${player.user.name}'s photo`}
                         className="w-10 h-10 rounded-full object-cover"
                       />

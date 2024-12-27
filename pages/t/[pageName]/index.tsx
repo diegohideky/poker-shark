@@ -58,7 +58,7 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
             <img
               src={`${
                 process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
-              }/files/${team.photoUrl}`}
+              }/files/${team.photoUrl || "shield-default.jpeg"}`}
               alt={`${team.name} logo`}
               className="rounded-full w-24 h-24 object-cover"
             />

@@ -115,6 +115,15 @@ export default function TeamsPage() {
         className="w-full p-2 mb-6 text-gray-800 rounded-lg border border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
       />
 
+      <div className="flex w-full justify-end mb-6">
+        <button
+          onClick={() => navigate.push("/teams/new")}
+          className="py-2 px-4 bg-blue-600 rounded-full text-gray-100 hover:bg-blue-500 cursor-pointer"
+        >
+          Create Team
+        </button>
+      </div>
+
       <div>
         {filteredTeams.length > 0 ? (
           <ul className="space-y-4">
@@ -134,7 +143,7 @@ export default function TeamsPage() {
                       src={`${
                         process.env.NEXT_PUBLIC_API_URL ||
                         "http://localhost:3000/api"
-                      }/files/${team.photoUrl}`}
+                      }/files/${team.photoUrl || "shield-default.jpeg"}`}
                       alt={`${team.name} logo`}
                       className="w-14 h-14 rounded-full border-2 border-yellow-500"
                     />

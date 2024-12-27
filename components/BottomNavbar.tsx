@@ -24,7 +24,7 @@ const BottomNavBar = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white flex justify-around items-center h-16 shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white flex justify-around items-center h-20 shadow-lg">
       {/* User's Photo */}
       <div
         className="flex flex-col items-center space-y-1 cursor-pointer"
@@ -33,10 +33,11 @@ const BottomNavBar = () => {
         <img
           src={`${
             process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
-          }/files/${user?.photoUrl}`}
+          }/files/${user?.photoUrl || "user-picture-default.avif"}`}
           alt="User Photo"
-          className="w-8 h-8 rounded-full"
+          className="w-9 h-9 rounded-full"
         />
+        <span className="text-sm">Profile</span>
       </div>
       {navItems.map((item, index) => (
         <div
@@ -45,7 +46,7 @@ const BottomNavBar = () => {
           onClick={item.action}
         >
           {/* @ts-ignore */}
-          <FontAwesomeIcon icon={item.icon} size="1x" className="text-md" />
+          <FontAwesomeIcon icon={item.icon} size="2x" />
           <span className="text-sm">{item.label}</span>
         </div>
       ))}

@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <UserProvider>
       <div className="min-h-screen flex flex-col">
-        <main className="flex-grow">
+        <main className={`flex-grow ${!isAccountPage && "mb-[5rem]"}`}>
           <Component {...pageProps} />
         </main>
         {/* Conditionally render BottomNavBar */}

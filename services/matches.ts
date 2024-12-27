@@ -9,6 +9,8 @@ type PaginationParams = {
   orderField?: string;
   orderDirection?: string;
   search?: string;
+  teamId?: string;
+  gameId?: string;
 };
 
 type CreateMatchParams = {
@@ -89,6 +91,17 @@ export const updateMatchPlayer = async (
 export const getMatchById = async (matchId: string): Promise<Match> => {
   const token = localStorage.getItem("token");
   const response = await api.get(`${endpoint}/${matchId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const getMatches = async (params: PaginationParams) => {
+  const token = localStorage.getItem("token");
+  const response = await api.get(`${endpoint}`, {
+    params,
     headers: {
       Authorization: `Bearer ${token}`,
     },
