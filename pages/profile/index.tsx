@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
             <img
               src={`${
                 process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
-              }/files/${user?.photoUrl}`}
+              }/files/${user?.photoUrl || "user-picture-default.avif"}`}
               alt="Profile"
               className="mt-3 w-16 h-16 rounded-full"
             />

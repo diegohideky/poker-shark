@@ -85,3 +85,17 @@ export const getTeamsByPageName = async (pageName) => {
   const response = await api.get(`${endpoint}/page-name/${pageName}`);
   return response.data;
 };
+
+export const createTeam = async (formData: FormData) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("User not authenticated");
+
+  const response = await api.post(endpoint, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data;
+};
