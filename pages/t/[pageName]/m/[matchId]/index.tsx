@@ -11,6 +11,7 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Match } from "@entities/Match";
+import { FaChartLine, FaEye, FaPlus } from "react-icons/fa6";
 
 interface Player {
   id: string;
@@ -161,8 +162,9 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   const matchDiff = useMemo(() => {
     if (gameType === "CASH") {
       return formatScore(
-        players.reduce((acc, curr) => {
-          return acc - (curr.matchPlayer?.score ?? 0);
+        Object.values(scores).reduce((acc, curr) => {
+          console.log({ curr: convertToCents(curr) });
+          return acc - convertToCents(curr);
         }, 0)
       );
     }
@@ -206,39 +208,53 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
           </div>
         </div>
 
-        {/* Navigation Buttons */}
-        <div className="flex flex-wrap gap-4 justify-center mb-8">
+        <div className="flex justify-end space-x-4 p-2">
+          {/* New Matches */}
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-32"
-            onClick={() => goTo(`/t/${team.pageName}/players`)}
-          >
-            Players
-          </button>
-          <button
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-32"
-            onClick={() => goTo(`/t/${team.pageName}/ranking`)}
-          >
-            Ranking
-          </button>
-          <button
-            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-32"
-            onClick={() => goTo(`/t/${team.pageName}/matches`)}
-          >
-            Matches
-          </button>
-          <button
-            className="bg-yellow-500 hover:bg-yellow-600 text-white-900 font-bold py-3 px-6 rounded-lg w-48 shadow-lg"
             onClick={() =>
               goTo(`/t/${team.pageName}/g/${match.gameId}/matches/new`)
             }
+            className="flex items-center bg-gray-500 hover:bg-gray-600 text-white py-2 px-3 rounded-full"
           >
-            Create New Match
+            <FaPlus className="mr-1" />
+          </button>
+
+          {/* View Matches */}
+          <button
+            onClick={() =>
+              goTo(`/t/${team.pageName}/g/${match.gameId}/matches`)
+            }
+            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-full"
+          >
+            <FaEye className="mr-1" />
+          </button>
+
+          {/* Ranking */}
+          <button
+            onClick={() =>
+              goTo(`/t/${team.pageName}/g/${match.gameId}/ranking`)
+            }
+            className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full"
+          >
+            <FaChartLine className="mr-1" />
           </button>
         </div>
 
         {/* Match Content */}
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold">Players ({totalPlayers})</h2>
+        <div className="">
+          <div className="flex justify-between py-4">
+            <h2 className="text-xl font-semibold">Players ({totalPlayers})</h2>
+            <div>
+              <p className="font-bold text-lg">
+                Diff:{" "}
+                <span
+                  className={matchDiff.startsWith("-") ? "text-red-500" : ""}
+                >
+                  {matchDiff}
+                </span>
+              </p>
+            </div>
+          </div>
           {players.length === 0 ? (
             <p>No players available.</p>
           ) : (
@@ -288,15 +304,6 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
               ))}
             </ul>
           )}
-        </div>
-
-        <div>
-          <p className="font-bold text-lg">
-            Match Difference:{" "}
-            <span className={matchDiff.startsWith("-") ? "text-red-500" : ""}>
-              {matchDiff}
-            </span>
-          </p>
         </div>
       </div>
     </main>

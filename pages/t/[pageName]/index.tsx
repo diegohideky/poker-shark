@@ -73,7 +73,6 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
 
         {/* List of Games */}
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Games</h2>
           {games.length > 0 ? (
             <ul className="space-y-4">
               {games.map((game) => (
@@ -84,7 +83,7 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                   {/* Game Details */}
                   <div>
                     <p className="text-lg font-medium">{game.nickname}</p>
-                    <p className="text-gray-400 text-sm">{game.type}</p>
+                    <p className="text-gray-400 text-sm italic">{game.type}</p>
                   </div>
 
                   {/* Options with Icons */}
@@ -94,7 +93,7 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                       onClick={() =>
                         goTo(`/t/${team.pageName}/g/${game.id}/matches/new`)
                       }
-                      className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded"
+                      className="flex items-center bg-gray-500 hover:bg-gray-600 text-white py-2 px-3 rounded-full"
                     >
                       <FaPlus className="mr-1" />
                     </button>
@@ -104,7 +103,7 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                       onClick={() =>
                         goTo(`/t/${team.pageName}/g/${game.id}/matches`)
                       }
-                      className="flex items-center bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded"
+                      className="flex items-center bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-full"
                     >
                       <FaEye className="mr-1" />
                     </button>
@@ -114,7 +113,7 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                       onClick={() =>
                         goTo(`/t/${team.pageName}/g/${game.id}/ranking`)
                       }
-                      className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded"
+                      className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full"
                     >
                       <FaChartLine className="mr-1" />
                     </button>
