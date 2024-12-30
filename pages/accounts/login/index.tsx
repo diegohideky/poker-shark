@@ -54,7 +54,7 @@ const LoginPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-slate-900 p-6 rounded-lg shadow-lg w-full max-w-sm border border-gray-800 flex flex-col gap-2"
       >
-        <Typography variant="title" className="text-gray-50	mb-4 text-center">
+        <Typography variant="title" className="text-white	mb-4 text-center">
           Poker Shark
         </Typography>
 
@@ -114,16 +114,16 @@ const LoginPage = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-gray-50 rounded-md p-2 hover:bg-yellow-600 transition duration-200 flex items-center justify-center"
+          className="w-full bg-green-600 text-gray-50 rounded-md p-2 hover:bg-yellow-600 transition duration-200 flex items-center justify-center"
           disabled={loading}
         >
           Login
         </button>
 
-        <div>
+        <div className="w-full mt-5 flex justify-end">
           {/* add a sinup link button */}
           <button
-            className="text-gray-50 hover:text-yellow-400 transition duration-200"
+            className="text-blue-400 hover:text-blue-700 transition duration-200"
             onClick={() => router.push("/accounts/signup")}
           >
             Don&apos;t have an account? Sign up

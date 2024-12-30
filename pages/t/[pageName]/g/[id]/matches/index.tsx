@@ -1,45 +1,56 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import dayjs from "dayjs";
 import { useRouter } from "next/router";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { getMatches } from "@services/matches"; // Replace with your service function
 import { showErrorToast } from "@libs/utils";
 import LoadingOverlay from "@components/LoadingOverlay";
 import { GetServerSideProps } from "next";
 import { getTeamsByPageName } from "@services/teams";
 
+const LIMIT = 5;
+
 const TeamMatches = ({ team }) => {
   const router = useRouter();
-
   const { id: queryGameId } = router.query;
 
   const [matches, setMatches] = useState([]);
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
+
+  const fetchMatches = useCallback(async () => {
+    if (!team || !queryGameId || (total > 0 && matches.length >= total)) return;
+
+    setIsLoading(true);
+    try {
+      const response = await getMatches({
+        teamId: team.id,
+        gameId: queryGameId as string,
+        offset,
+        limit: LIMIT,
+        orderField: "datetime",
+        orderDirection: "DESC",
+      });
+
+      setMatches((prev) => [...prev, ...response.data]);
+      setTotal(response.total);
+      setOffset((prev) => prev + LIMIT);
+    } catch (error) {
+      console.error(error);
+      showErrorToast("Failed to load matches.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [team, queryGameId, offset]);
 
   useEffect(() => {
-    if (!team || !queryGameId) return;
-
-    const fetchMatches = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getMatches({
-          teamId: team.id,
-          gameId: queryGameId as string,
-          offset: 0,
-          limit: 100,
-          orderField: "datetime",
-          orderDirection: "DESC",
-        });
-        setMatches(response.data);
-        setTotal(response.total);
-      } catch (error) {
-        console.error(error);
-        showErrorToast("Failed to load matches.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMatches();
+    if (team && queryGameId) {
+      setMatches([]);
+      setOffset(0);
+      setTotal(0);
+      fetchMatches(); // Initial fetch
+    }
   }, [team, queryGameId]);
 
   return (
@@ -57,31 +68,44 @@ const TeamMatches = ({ team }) => {
         )}
       </div>
       <h1 className="text-2xl font-bold mb-6 text-center text-white">
-        {team?.name} Matches ({total})
+        {team?.name}
       </h1>
-      {matches.length === 0 ? (
+      <div className="p-2">
+        <p className="text-sm text-white">Matches: ({total})</p>
+      </div>
+      {matches.length === 0 && !isLoading ? (
         <p className="text-center text-gray-500">
           No matches found for this team.
         </p>
       ) : (
-        <ul className="space-y-4">
-          {matches.map((match: any) => (
-            <li
-              key={match.id}
-              className="p-4 bg-gray-800 rounded-lg flex flex-col justify-between gap-1 shadow-md hover:bg-gray-700 transition-shadow cursor-pointer"
-              onClick={() => router.push(`/t/${team.pageName}/m/${match.id}`)}
-            >
-              <h2 className="text-lg font-semibold text-white">{match.name}</h2>
-              <p className="text-sm text-gray-400">
-                Date: {new Date(match.datetime).toLocaleDateString()} - Time:{" "}
-                {new Date(match.datetime).toLocaleTimeString()}
-              </p>
-              {/* <p className="text-sm text-gray-600">
-                Buy-In: {match.buyIn} | Add-On: {match.addOn}
-              </p> */}
-            </li>
-          ))}
-        </ul>
+        <InfiniteScroll
+          dataLength={matches.length}
+          next={fetchMatches}
+          hasMore={matches.length < total}
+          loader={<p className="text-center text-gray-500">Loading more...</p>}
+          endMessage={
+            <p className="text-center text-gray-500">
+              No more matches to show.
+            </p>
+          }
+        >
+          <ul className="space-y-4">
+            {matches.map((match: any) => (
+              <li
+                key={match.id}
+                className="p-4 bg-gray-800 rounded-lg flex flex-col justify-between gap-1 shadow-md hover:bg-gray-700 transition-shadow cursor-pointer"
+                onClick={() => router.push(`/t/${team.pageName}/m/${match.id}`)}
+              >
+                <h2 className="text-lg font-semibold text-white">
+                  {match.name}
+                </h2>
+                <p className="text-sm text-gray-400 italic">
+                  {dayjs(match.datetime).format("DD/MM/YYYY HH:mm:ss")}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </InfiniteScroll>
       )}
     </div>
   );
