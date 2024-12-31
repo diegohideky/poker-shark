@@ -7,10 +7,8 @@ import { FaMoneyBillAlt } from "react-icons/fa";
 import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
 import Head from "next/head";
-import styles from "@styles/Home.module.css";
 import RankingBadge from "components/rankingBadge";
 import AdSense from "components/AdSense";
-import AdBanner from "components/AdBanner";
 import { formatMoney } from "libs/format";
 import { getRanking } from "@services/ranking";
 import { GetServerSideProps } from "next";
@@ -24,9 +22,9 @@ const domain = "poker-shark.vercel.app";
 const addsId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
 
 const unitOptions = [
-  { label: "None", value: null },
   { label: "Week", value: "week" },
   { label: "Month", value: "month" },
+  { label: "Quarter", value: "quarter" },
   { label: "Year", value: "year" },
 ];
 
@@ -37,7 +35,7 @@ export default function Home({ team }): React.FC<TeamProps> {
   const [caixinha, setCaixinha] = useState(0);
   const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState<string>("week");
 
   useEffect(() => {
     const fetchRanking = async () => {
@@ -47,6 +45,7 @@ export default function Home({ team }): React.FC<TeamProps> {
         const data = await getRanking({
           teamId: team.id,
           gameId: queryGameId,
+          unit: selectedUnit,
         });
 
         console.log({ data });
@@ -62,17 +61,7 @@ export default function Home({ team }): React.FC<TeamProps> {
     };
 
     fetchRanking();
-
-    // fetch("/api/v2/ranking")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setRanking(data.ranking);
-    //     setFilteredRanking(data.ranking);
-    //     setCaixinha(data.caixinha);
-    //   })
-    //   .catch((err) => console.log({ err }))
-    //   .finally(() => setLoading(false));
-  }, []);
+  }, [selectedUnit]);
 
   const getTextColor = (number) => {
     if (number > 0) {
@@ -184,45 +173,31 @@ export default function Home({ team }): React.FC<TeamProps> {
         <AdSense pId={addsId} />
       </Head>
 
-      <main>
-        <section
-          className={`${styles.bannerWrap} flex flex-col justify-evenly h-[500px] p-4`}
-        >
-          <div className={`${styles.bannerLogo}`} />
-          <div
-            className={`${styles.bannerContent} ${styles.title} flex items-center justify-center`}
-          >
-            Poker Shark
-          </div>
+      <main className="p-5 md:p-10">
+        <section className="flex flex-row items-center justify-center py-5">
+          {unitOptions.map((option) => (
+            <button
+              key={option.value}
+              className={`flex flex-row items-center justify-center gap-2 p-2 md:p-2 w-full bg-blue-500 hover:bg-blue-600 ${
+                selectedUnit === option.value ? "bg-blue-600" : ""
+              }`}
+              onClick={() => setSelectedUnit(option.value)}
+            >
+              <span className="text-1xl md:text-2xl font-bold text-white">
+                {option.label}
+              </span>
+            </button>
+          ))}
         </section>
 
         <section>
-          <div className="flex flex-row items-center justify-center p-5 md:p-10 w-full">
+          <div className="flex flex-row items-center justify-center w-full">
             <input
               className="w-full md:w-[350px] h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
               type="text"
-              placeholder="Digite o nome do caga tronco"
+              placeholder="Search player..."
               onChange={onSearch}
             />
-          </div>
-        </section>
-
-        <section>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Time Unit
-            </label>
-            <select
-              value={selectedUnit || ""}
-              onChange={(e) => setSelectedUnit(e.target.value || null)}
-              className="block w-full p-2 border border-gray-300 rounded-md"
-            >
-              {unitOptions.map((option) => (
-                <option key={option.value || "none"} value={option.value || ""}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
           </div>
         </section>
 
@@ -234,12 +209,6 @@ export default function Home({ team }): React.FC<TeamProps> {
             <MoneyCountUp moneyValue={caixinha} />
           </div>
         </section>
-
-        <AdBanner
-          dataAdSlot="5036828311"
-          dataAdFormat="auto"
-          dataFullWidthResponsive={true}
-        />
 
         <LoadingOverlay isLoading={loading} />
 
