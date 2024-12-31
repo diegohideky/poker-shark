@@ -11,12 +11,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        pink: "#ffa1dd",
-        aqua: "#a3f3f0",
-        purple: "#d6caf0",
-        orange: "#ffcaa2",
-        yellow: "#fff8aa",
-        amber: "rgb(234 179 8)",
+        ["custom-pink"]: "#ffa1dd",
+        ["custom-aqua"]: "#a3f3f0",
+        ["custom-purple"]: "#d6caf0",
+        ["custom-orange"]: "#ffcaa2",
+        ["custom-yellow"]: "#fff8aa",
+        ["custom-amber"]: "rgb(234 179 8)",
       },
     },
   },
@@ -24,8 +24,8 @@ module.exports = {
     require("@tailwindcss/aspect-ratio"),
     function ({ addUtilities }) {
       const colors = {
-        "purple-800": "#6B46C1",
-        "pink-500": "#EC4899",
+        "custom-purple-800": "#6B46C1",
+        "custom-pink-500": "#EC4899",
       };
 
       const gradients = {};

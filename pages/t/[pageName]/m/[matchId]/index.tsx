@@ -1,5 +1,6 @@
 // pages/t/[pageName]/matches/[matchId].tsx
 import { GetServerSideProps } from "next";
+import dayjs from "dayjs";
 import { getTeamsByPageName } from "@services/teams";
 import {
   getMatchPlayers,
@@ -11,7 +12,9 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Match } from "@entities/Match";
-import { FaChartLine, FaEye, FaPlus } from "react-icons/fa6";
+import { FaClipboard, FaEye, FaPlus } from "react-icons/fa6";
+import { showSuccessToast } from "@libs/utils";
+import { FaTrophy } from "react-icons/fa";
 
 interface Player {
   id: string;
@@ -91,6 +94,30 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
     const absValue = Math.abs(value);
     const formatted = (absValue / 100).toFixed(2).replace(".", ",");
     return isNegative ? `-${formatted}` : formatted;
+  };
+
+  const generateRankingText = (): string => {
+    const matchDate = match?.datetime
+      ? dayjs(match.datetime).format("DD/MM/YYYY")
+      : "N/A";
+
+    const playerScores = players
+      .map(
+        (player) =>
+          `${player.user.name} ${scores[player.id].startsWith("-") ? "" : "+"}${
+            scores[player.id]
+          }`
+      )
+      .join("\n");
+
+    return `Poker table ${matchDate}\n\n${playerScores}\n\nDiff: ${matchDiff}`;
+  };
+
+  const copyToClipboard = () => {
+    const rankingText = generateRankingText();
+    navigator.clipboard.writeText(rankingText).then(() => {
+      showSuccessToast("Ranking copied to clipboard!");
+    });
   };
 
   const handleScoreChange = (playerId: string, inputValue: string) => {
@@ -234,16 +261,17 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
             onClick={() =>
               goTo(`/t/${team.pageName}/g/${match.gameId}/ranking`)
             }
-            className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full"
+            className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded-full"
           >
-            <FaChartLine className="mr-1" />
+            <FaTrophy className="mr-1" />
           </button>
         </div>
 
         {/* Match Content */}
         <div className="">
-          <div className="flex justify-between py-4">
+          <div className="flex items-center justify-between py-4">
             <h2 className="text-xl font-semibold">Players ({totalPlayers})</h2>
+
             <div>
               <p className="font-bold text-lg">
                 Diff:{" "}
@@ -254,6 +282,12 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                 </span>
               </p>
             </div>
+            <button
+              onClick={copyToClipboard}
+              className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full"
+            >
+              <FaClipboard className="mr-1" />
+            </button>
           </div>
           {players.length === 0 ? (
             <p>No players available.</p>

@@ -5,7 +5,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Game } from "@entities/Game";
-import { FaPlus, FaEye, FaChartLine } from "react-icons/fa"; // Import icons
+import { FaPlus, FaEye, FaTrophy } from "react-icons/fa"; // Import icons
 
 interface TeamProps {
   team: {
@@ -113,9 +113,9 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
                       onClick={() =>
                         goTo(`/t/${team.pageName}/g/${game.id}/ranking`)
                       }
-                      className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full"
+                      className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded-full"
                     >
-                      <FaChartLine className="mr-1" />
+                      <FaTrophy className="mr-1" />
                     </button>
                   </div>
                 </li>

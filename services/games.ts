@@ -21,3 +21,13 @@ export const getGames = async (params: PaginationParams) => {
 
   return response.data;
 };
+
+export const getGameById = async (gameId: string) => {
+  const token = localStorage.getItem("token");
+  const response = await api.get(`${endpoint}/${gameId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};

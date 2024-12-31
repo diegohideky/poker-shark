@@ -14,6 +14,8 @@ import { getRanking } from "@services/ranking";
 import { GetServerSideProps } from "next";
 import { getTeamsByPageName } from "@services/teams";
 import LoadingOverlay from "@components/LoadingOverlay";
+import { getGameById } from "@services/games";
+import Typography from "@components/Typography";
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
@@ -36,6 +38,7 @@ export default function Home({ team }): React.FC<TeamProps> {
   const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUnit, setSelectedUnit] = useState<string>("week");
+  const [game, setGame] = useState(null);
 
   useEffect(() => {
     const fetchRanking = async () => {
@@ -47,8 +50,6 @@ export default function Home({ team }): React.FC<TeamProps> {
           gameId: queryGameId,
           unit: selectedUnit,
         });
-
-        console.log({ data });
 
         setRanking(data.ranking);
         setFilteredRanking(data.ranking);
@@ -62,6 +63,21 @@ export default function Home({ team }): React.FC<TeamProps> {
 
     fetchRanking();
   }, [selectedUnit]);
+
+  useEffect(() => {
+    const fetchGame = async () => {
+      try {
+        const data = await getGameById(queryGameId);
+        setGame(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (queryGameId) {
+      fetchGame();
+    }
+  }, [queryGameId]);
 
   const getTextColor = (number) => {
     if (number > 0) {
@@ -174,6 +190,14 @@ export default function Home({ team }): React.FC<TeamProps> {
       </Head>
 
       <main className="p-5 md:p-10">
+        <section className="flex flex-col items-center justify-center py-3 text-white">
+          <Typography variant="title" className="text-white">
+            {game?.nickname}
+          </Typography>
+          <h1 className="text-3xl md:text-2xl font-italic">{}</h1>
+          <span className="italic">{game?.type}</span>
+        </section>
+
         <section className="flex flex-row items-center justify-center py-5">
           {unitOptions.map((option) => (
             <button

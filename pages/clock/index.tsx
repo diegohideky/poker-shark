@@ -18,7 +18,7 @@ const descricao =
 const imagemPrincipal = "/poker-shark-bg.jpeg";
 const domain = "poker-shark.vercel.app";
 
-const TimerBox = ({ value, label, bgColor = "bg-orange-700" }) => {
+const TimerBox = ({ value, label, bgColor = "bg-custom-orange-700" }) => {
   return (
     <div className="flex flex-col gap-2">
       <div
@@ -193,7 +193,7 @@ export default function Home() {
     if (timerMinutes === 0 && timerSeconds <= totalSeconds * 0.1) {
       return "bg-red-500";
     } else if (timerMinutes === 0 && timerSeconds <= totalSeconds * 0.2) {
-      return "bg-amber";
+      return "bg-custom-amber";
     } else {
       return "bg-green-700";
     }
@@ -204,7 +204,7 @@ export default function Home() {
     if (timerMinutes === 0 && timerSeconds <= totalSeconds * 0.1) {
       return "text-red-500";
     } else if (timerMinutes === 0 && timerSeconds <= totalSeconds * 0.2) {
-      return "text-amber";
+      return "text-custom-amber";
     } else {
       return "text-green-500";
     }
