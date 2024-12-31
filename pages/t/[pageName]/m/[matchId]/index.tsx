@@ -15,6 +15,7 @@ import { Match } from "@entities/Match";
 import { FaClipboard, FaEye, FaPlus } from "react-icons/fa6";
 import { showSuccessToast } from "@libs/utils";
 import { FaTrophy } from "react-icons/fa";
+import { formatScore } from "@libs/format";
 
 interface Player {
   id: string;
@@ -88,13 +89,6 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   useEffect(() => {
     getMatch();
   }, [matchId]);
-
-  const formatScore = (value: number): string => {
-    const isNegative = value < 0;
-    const absValue = Math.abs(value);
-    const formatted = (absValue / 100).toFixed(2).replace(".", ",");
-    return isNegative ? `-${formatted}` : formatted;
-  };
 
   const generateRankingText = (): string => {
     const matchDate = match?.datetime

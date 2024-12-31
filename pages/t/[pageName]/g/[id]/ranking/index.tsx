@@ -16,6 +16,7 @@ import { getTeamsByPageName } from "@services/teams";
 import LoadingOverlay from "@components/LoadingOverlay";
 import { getGameById } from "@services/games";
 import Typography from "@components/Typography";
+import { getTextColor } from "@libs/utils";
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
@@ -78,16 +79,6 @@ export default function Home({ team }): React.FC<TeamProps> {
       fetchGame();
     }
   }, [queryGameId]);
-
-  const getTextColor = (number) => {
-    if (number > 0) {
-      return "text-green-500";
-    } else if (number < 0) {
-      return "text-red-500";
-    }
-
-    return "text-white";
-  };
 
   const onSearch = (event) => {
     const { value } = event.target;
