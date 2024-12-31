@@ -78,13 +78,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     .limit(1)
     .getOne();
 
-  if (!penultimateMatch) {
-    return res
-      .status(404)
-      .json({ message: "Penultimate match not found or has no players." });
-  }
-
-  const currentRankingQuery = await matchPlayerRepository
+  const currentRankingQuery = matchPlayerRepository
     .createQueryBuilder("mp")
     .innerJoin("mp.match", "m")
     .innerJoin("m.game", "g")
@@ -109,7 +103,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     .orderBy("score", "DESC")
     .getRawMany();
 
-  const previousRankingQuery = await matchPlayerRepository
+  const previousRankingQuery = matchPlayerRepository
     .createQueryBuilder("mp")
     .innerJoin("mp.match", "m")
     .innerJoin("m.game", "g")
@@ -121,20 +115,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     previousRankingQuery.andWhere("m.datetime >= :startDate", { startDate });
   }
 
-  const previousRanking = await previousRankingQuery
-    .andWhere("m.datetime <= :endDate", {
-      endDate: penultimateMatch.datetime,
-    })
-    .select([
-      'u.id AS "userId"',
-      'u.photoUrl as "photoUrl"',
-      "MAX(u.name) AS name",
-      "SUM(mp.score) AS score",
-      "COUNT(mp.id) AS matches",
-    ])
-    .groupBy("u.id")
-    .orderBy("score", "DESC")
-    .getRawMany();
+  const previousRanking = !penultimateMatch
+    ? []
+    : await previousRankingQuery
+        .andWhere("m.datetime <= :endDate", {
+          endDate: penultimateMatch.datetime,
+        })
+        .select([
+          'u.id AS "userId"',
+          'u.photoUrl as "photoUrl"',
+          "MAX(u.name) AS name",
+          "SUM(mp.score) AS score",
+          "COUNT(mp.id) AS matches",
+        ])
+        .groupBy("u.id")
+        .orderBy("score", "DESC")
+        .getRawMany();
 
   const ranking = currentRanking.map((current, index) => {
     const previousIndex = previousRanking.findIndex(
@@ -172,7 +168,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       status,
       lastScore: lastScore / 100,
       lastFormattedScore: lastScore / 100,
-      lastPosition: null, // Placeholder for previous position logic
+      lastPosition: previousIndex === -1 ? 0 : previousIndex + 1,
       lastScoreDiff: scoreDiff / 100,
       lastCoins: Math.round((lastScore / 100) * 400),
     };

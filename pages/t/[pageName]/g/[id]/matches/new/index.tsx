@@ -127,26 +127,6 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
               {team.name}
             </span>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <button
-              onClick={() => router.push(`/t/${team.pageName}/players`)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white w-full sm:w-auto"
-            >
-              Players
-            </button>
-            <button
-              onClick={() => router.push(`/t/${team.pageName}/ranking`)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white w-full sm:w-auto"
-            >
-              Ranking
-            </button>
-            <button
-              onClick={() => router.push(`/t/${team.pageName}/matches`)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white w-full sm:w-auto"
-            >
-              Matches
-            </button>
-          </div>
         </div>
 
         <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">
