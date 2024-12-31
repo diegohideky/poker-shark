@@ -3,11 +3,11 @@
 const RankingBadge = ({ position, className }) => {
   const getBadgeColor = (position) => {
     if (position === 1) {
-      return "bg-yellow";
+      return "bg-custom-yellow";
     } else if (position === 2) {
       return "bg-gray-400";
     } else if (position === 3) {
-      return "bg-orange";
+      return "bg-custom-orange";
     }
 
     return "bg-white";

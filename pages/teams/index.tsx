@@ -152,7 +152,7 @@ export default function TeamsPage() {
                       "http://localhost:3000/api"
                     }/files/${team.photoUrl || "shield-default.jpeg"}`}
                     alt={`${team.name} logo`}
-                    className="w-14 h-14 rounded-full border-2 border-yellow-500"
+                    className="w-14 h-14 rounded-full border-2"
                   />
                   <span>{team.name}</span>
                 </div>

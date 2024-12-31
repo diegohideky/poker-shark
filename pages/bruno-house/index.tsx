@@ -50,7 +50,7 @@ export default function Home() {
 
   const getCoinColor = (number) => {
     if (number > 0) {
-      return "text-amber";
+      return "text-custom-amber";
     }
     return "text-[#c0c0c0]";
   };
