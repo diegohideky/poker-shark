@@ -62,3 +62,13 @@ export const showInfoToast = (message: string) => {
     draggable: true,
   });
 };
+
+export const getTextColor = (number) => {
+  if (number > 0) {
+    return "text-green-500";
+  } else if (number < 0) {
+    return "text-red-500";
+  }
+
+  return "text-white";
+};
