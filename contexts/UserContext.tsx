@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { User } from "@entities/User";
 import { getCurrent } from "@services/accounts";
 import React, {
@@ -21,6 +22,7 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
@@ -28,8 +30,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
-    if (savedToken) setToken(savedToken);
-    if (savedUser) setUser(JSON.parse(savedUser));
+
+    const isAccountPage = router.pathname.startsWith("/accounts");
+
+    if (!isAccountPage && (!savedToken || !savedUser)) {
+      router.push("/accounts/login");
+    } else {
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
+    }
   }, []);
 
   const setUserData = (user: User | null) => {

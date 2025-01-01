@@ -31,9 +31,9 @@ export class User extends SoftDeleteEntity {
   })
   photoUrl: string | null;
 
-  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  @OneToMany(() => UserRole, (userRole) => userRole.user, { nullable: true })
   userRoles: Relation<UserRole[]>;
 
-  @OneToMany(() => Team, (team) => team.owner)
+  @OneToMany(() => Team, (team) => team.owner, { nullable: true })
   teams: Relation<Team[]>;
 }
