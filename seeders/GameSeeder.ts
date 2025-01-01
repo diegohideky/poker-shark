@@ -12,8 +12,12 @@ export const GameSeeder = async (dataSource: DataSource) => {
       nickname: "NLH",
       type: "TOURNAMENT",
     },
-    { name: "Poker Pot Limit Omaha", nickname: "PLO", type: "CASH" },
-    { name: "Poker Pot Limit Omaha", nickname: "PLO", type: "TOURNAMENT" },
+    { name: "Poker Pot Limit Omaha 4 Cards", nickname: "PLO4", type: "CASH" },
+    {
+      name: "Poker Pot Limit Omaha 4 Cards",
+      nickname: "PLO4",
+      type: "TOURNAMENT",
+    },
   ];
 
   for (const game of games) {

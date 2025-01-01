@@ -20,7 +20,7 @@ const BottomNavBar = () => {
   };
 
   const navItems = [
-    { label: "Teams", icon: faShield, action: () => router.push("/teams") },
+    { label: "Teams", icon: faShield, action: () => router.push("/") },
     {
       label: "Career",
       icon: faChartColumn,
