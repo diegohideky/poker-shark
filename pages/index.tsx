@@ -1,365 +1,205 @@
-// @ts-nocheck
-import { useEffect, useState, useRef } from "react";
-import CountUp from "react-countup";
-import { useRouter } from "next/navigation";
-import { FaRankingStar } from "react-icons/fa6";
-import { FaMoneyBillAlt } from "react-icons/fa";
-// import Script from "next/script";
-import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
-import { HiMinusCircle } from "react-icons/hi2";
-import Head from "next/head";
-import styles from "@styles/Home.module.css";
-import RankingBadge from "components/rankingBadge";
-import { PLAYERS } from "libs/items";
-import AdSense from "components/AdSense";
-import AdBanner from "components/AdBanner";
-import { formatMoney } from "libs/format";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { askForJoinTeam, getTeams } from "@services/teams";
+import { useUser } from "@contexts/UserContext"; // Import UserContext
+import {
+  faEnvelope,
+  faCheckCircle,
+  faRightToBracket,
+  faArrowRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import LoadingOverlay from "@components/LoadingOverlay";
+import { showErrorToast, showSuccessToast } from "@libs/utils";
+import { FaPlus } from "react-icons/fa6";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-const titulo = "Poker Shark";
-const descricao = "O poker mais sanguinário do Grand Splendor";
-const imagemPrincipal = "/poker-shark-bg.jpeg";
-const domain = "poker-shark.vercel.app";
-const addsId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID;
+const PAGE_SIZE = 10; // Number of teams per page
 
-export default function Home() {
-  const [ranking, setRanking] = useState([]);
-  const [caixinha, setCaixinha] = useState(0);
-  const [filteredRanking, setFilteredRanking] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function TeamsPage() {
+  const { user, getCurrentUser } = useUser();
+  const [teams, setTeams] = useState([]);
+  const [filteredTeams, setFilteredTeams] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true); // To track if more data is available
+
+  const navigate = useRouter();
+
+  const fetchTeams = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const result = await getTeams({
+        offset: (page - 1) * PAGE_SIZE,
+        limit: PAGE_SIZE,
+      });
+      setTeams((prevTeams) => [...prevTeams, ...result.data]);
+      setFilteredTeams((prevTeams) => [...prevTeams, ...result.data]);
+
+      if (result.data.length < PAGE_SIZE) {
+        setHasMore(false); // No more data to load
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setLoading(true);
-    fetch("/api/ranking")
-      .then((res) => res.json())
-      .then((data) => {
-        setRanking(data.ranking);
-        setFilteredRanking(data.ranking);
-        setCaixinha(data.caixinha);
-      })
-      .catch((err) => console.log({ err }))
-      .finally(() => setLoading(false));
-  }, []);
+    fetchTeams(currentPage);
+  }, [currentPage]);
 
-  const getTextColor = (number) => {
-    if (number > 0) {
-      return "text-green-500";
-    } else if (number < 0) {
-      return "text-red-500";
+  useEffect(() => {
+    const filtered = teams.filter((team) =>
+      team.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredTeams(filtered);
+  }, [searchTerm, teams]);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
+    setTeams([]);
+    fetchTeams(1);
+  };
+
+  const loadMoreTeams = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const getTeamStatus = (teamId) => {
+    const teamPlayer = user["teamPlayers"]?.find((tp) => tp.teamId === teamId);
+    if (teamPlayer) {
+      if (teamPlayer.status === "accepted") return "Leave Team";
+      if (teamPlayer.status === "pending") return "Pending";
+      if (teamPlayer.status === "declined") return "Join Team";
     }
-
-    return "text-white";
+    return "Join Team";
   };
 
-  const onSearch = (event) => {
-    const { value } = event.target;
-
-    if (!value) return setFilteredRanking(ranking);
-
-    const filtered = ranking.filter((item) =>
-      item.name.toLowerCase().includes(value.trim().toLowerCase())
-    );
-
-    setFilteredRanking(filtered);
+  const handleJoinTeam = async (teamId: string): Promise<void> => {
+    try {
+      await askForJoinTeam(teamId);
+      showSuccessToast("Invitation sent successfully!");
+      await getCurrentUser();
+      setTeams([]); // Reset teams
+      fetchTeams(1); // Reload teams
+    } catch (error) {
+      console.error(error);
+      showErrorToast("Error to send invitation. Try again later.");
+    }
   };
 
-  const goToPage = () => {
-    window.open(
-      "https://wolfmaya.com.br/curso-profissionalizante-de-atores-2024-2-presencial/?gad_source=1&gclid=Cj0KCQjw9vqyBhCKARIsAIIcLMGBHYJTDZomEugStk8Q23OwDfGbfA7Z50dRmi2dtyxj6ZzYwMYL8hgaAmp_EALw_wcB",
-      "_blank"
-    );
+  const handleLeaveTeam = (teamId) => {
+    console.log({ teamId });
   };
 
-  const MoneyCountUp = ({ moneyValue }) => {
-    const countUpRef = useRef(null);
-    const [startCounting, setStartCounting] = useState(false);
+  const goToRequests = (teamId) => {
+    navigate.push(`/teams/${teamId}/requests`);
+  };
 
-    useEffect(() => {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setStartCounting(true);
-            observer.disconnect(); // Stop observing after it has started counting
-          }
-        },
-        { threshold: 0.1 } // Adjust the threshold as needed
-      );
-
-      if (countUpRef.current) {
-        observer.observe(countUpRef.current);
-      }
-
-      return () => {
-        if (countUpRef.current) {
-          observer.unobserve(countUpRef.current);
-        }
-      };
-    }, []);
-
-    return (
-      <h1
-        ref={countUpRef}
-        className={`flex flex-row gap-2 items-center text-1xl md:text-2xl font-bold ${getTextColor(
-          moneyValue
-        )}`}
-      >
-        {startCounting && (
-          <CountUp
-            start={0}
-            end={moneyValue}
-            formattingFn={(value) => formatMoney(value)}
-            decimals={2}
-          />
-        )}
-      </h1>
-    );
+  const goToTeamPage = (teamId) => {
+    navigate.push(`/t/${teamId}`);
   };
 
   return (
-    <div>
-      <Head>
-        <title>{titulo}</title>
-        <meta name="description" content={descricao} />
-        <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content={titulo} />
-        <meta property="og:description" content={descricao} />
-        <meta
-          property="og:image"
-          content={`https://${domain}/${imagemPrincipal}`}
-        />
-        <meta property="og:url" content={`https://${domain}/`} />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content={titulo} />
-        <meta property="og:locale" content="pt_BR" />
-        <meta name="twitter:title" content={titulo} />
-        <meta name="twitter:description" content={descricao} />
-        <meta
-          name="twitter:image"
-          content={`https://${domain}/${imagemPrincipal}`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@loja-por-do-sol" />
-        <meta name="twitter:creator" content="@loja-por-do-sol" />
+    <main className="p-4 min-h-screen text-gray-100">
+      <LoadingOverlay isLoading={isLoading} />
 
-        <meta itemProp="name" content={titulo} />
-        <meta itemProp="description" content={descricao} />
-        <meta
-          itemProp="image"
-          content={`https://${domain}/${imagemPrincipal}`}
-        />
-        <meta name="google-adsense-account" content={addsId} />
-        <AdSense pId={addsId} />
-        {/* <script async src={addsId} crossorigin="anonymous"></script> */}
-        {/* <Script
-          async
-          src={addsId}
-          strategy="beforeInteractive"
-          crossOrigin="anonymous"
-        /> */}
-        {/* <script
-          async
-          src="https://fundingchoicesmessages.google.com/i/pub-7385654632311141?ers=1"
-          nonce="cn-c7BvDYD7vna5ZCo66zg"
-        ></script> */}
-
-        {/* <Script
-          async
-          src="https://fundingchoicesmessages.google.com/i/pub-7385654632311141?ers=1"
-          strategy="afterInteractive"
-          nonce="cn-c7BvDYD7vna5ZCo66zg"
-        />
-
-        <Script
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                  function signalGooglefcPresent() {
-                      if (!window.frames['googlefcPresent']) {
-                          if (document.body) {
-                              const iframe = document.createElement('iframe');
-                              iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
-                              iframe.style.display = 'none';
-                              iframe.name = 'googlefcPresent';
-                              document.body.appendChild(iframe);
-                          } else {
-                              setTimeout(signalGooglefcPresent, 0);
-                          }
-                      }
-                  }
-                  signalGooglefcPresent();
-              })();
-          `,
-          }}
-        /> */}
-      </Head>
-
-      <main>
-        <section
-          className={`${styles.bannerWrap} flex flex-col justify-evenly h-[500px] p-4`}
+      <div className="fixed bottom-[6rem] right-4">
+        <button
+          onClick={() => navigate.push("/teams/new")}
+          className="flex items-center gap-2 py-2 px-4 bg-blue-600 rounded-full text-gray-100 hover:bg-blue-500 cursor-pointer"
         >
-          <div className={`${styles.bannerLogo}`} />
-          <div
-            className={`${styles.bannerContent} ${styles.title} flex items-center justify-center`}
-          >
-            Poker Shark
-          </div>
-        </section>
+          <FaPlus /> Team
+        </button>
+      </div>
 
-        <section>
-          <div className="flex flex-row items-center justify-center p-5 md:p-10 w-full">
-            <input
-              className="w-full md:w-[350px] h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-              type="text"
-              placeholder="Digite o nome do caga tronco"
-              onChange={onSearch}
-            />
-          </div>
-        </section>
+      <input
+        type="text"
+        placeholder="Search teams..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="w-full p-2 mb-6 text-gray-800 rounded-lg border border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+      />
 
-        <section>
-          <div className="flex flex-row items-center justify-center gap-2 p-2 md:p-2 w-full">
-            <span className="text-1xl md:text-2xl font-bold text-white">
-              Caixinha:
-            </span>{" "}
-            <MoneyCountUp moneyValue={caixinha} />
-          </div>
-        </section>
+      <InfiniteScroll
+        dataLength={filteredTeams.length}
+        next={loadMoreTeams}
+        hasMore={hasMore}
+        loader={<h4>Loading more teams...</h4>}
+        // endMessage={<p className="text-center">No more teams to show</p>}
+      >
+        <ul className="space-y-4">
+          {filteredTeams.map((team) => {
+            const teamStatus = getTeamStatus(team.id);
 
-        <AdBanner
-          dataAdSlot="5036828311"
-          dataAdFormat="auto"
-          dataFullWidthResponsive={true}
-        />
-
-        {loading ? (
-          <section className="flex flex-row items-center justify-center p-10 md: p-20">
-            <div role="status">
-              <svg
-                aria-hidden="true"
-                className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+            return (
+              <li
+                key={team.id}
+                className="p-4 bg-gray-800 rounded-lg flex justify-between gap-4 shadow-md"
               >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
-              <span className="sr-only">Loading...</span>
-            </div>
-          </section>
-        ) : (
-          <section className="flex flex-row items-center justify-center p-5">
-            <div className="flex flex-col items-center justify-center">
-              <div className="flex flex-col items-center justify-center gap-8">
-                {filteredRanking.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-row items-center gap-5 w-full"
-                  >
-                    <div className="flex flex-row items-center justify-center gap-4 relative">
-                      <img
-                        className="w-40 h-40 relative md:ml-5"
-                        src={
-                          PLAYERS[item.name]
-                            ? PLAYERS[item.name].image
-                            : "/players/Default.png"
-                        }
-                        alt="Poker Shark"
+                <div
+                  className="flex items-center gap-2 font-medium text-lg cursor-pointer hover:text-gray-300 transition duration-200"
+                  onClick={() => goToTeamPage(team.pageName)}
+                >
+                  <img
+                    src={`${
+                      process.env.NEXT_PUBLIC_API_URL ||
+                      "http://localhost:3000/api"
+                    }/files/${team.photoUrl || "shield-default.jpeg"}`}
+                    alt={`${team.name} logo`}
+                    className="w-14 h-14 rounded-full border-2"
+                  />
+                  <span>{team.name}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {team.ownerId === user.id && (
+                    <button
+                      onClick={() => goToRequests(team.id)}
+                      className="px-3 py-2 bg-blue-600 rounded-full text-gray-100 hover:bg-blue-500 cursor-pointer"
+                      aria-label="View Invites"
+                    >
+                      <FontAwesomeIcon icon={faEnvelope as IconProp} />
+                    </button>
+                  )}
+                  {teamStatus === "Join Team" && (
+                    <button
+                      onClick={() => handleJoinTeam(team.id)}
+                      className="px-3 py-2 bg-green-600 rounded-full text-gray-100 hover:bg-green-500 cursor-pointer"
+                      aria-label="Join Team"
+                    >
+                      <FontAwesomeIcon icon={faRightToBracket as IconProp} />
+                    </button>
+                  )}
+                  {teamStatus === "Leave Team" && (
+                    <button
+                      onClick={() => handleLeaveTeam(team.id)}
+                      className="px-3 py-2 bg-red-600 rounded-full text-gray-100 hover:bg-red-500 cursor-pointer"
+                      aria-label="Leave Team"
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowRightFromBracket as IconProp}
                       />
-                      <RankingBadge
-                        position={item.position}
-                        className="absolute bottom-0 left-0"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <div className="flex flex-row items-center gap-2">
-                        {item.status === "up" && (
-                          <>
-                            <BsArrowUpCircleFill color="#22c55e" />
-                            <h4 className="text-[#22c55e]">
-                              {item.positionDiff}
-                            </h4>
-                          </>
-                        )}
-                        {item.status === "down" && (
-                          <>
-                            <BsArrowDownCircleFill color="#ef4444" />
-                            <h4 className="text-[#ef4444]">
-                              {item.positionDiff}
-                            </h4>
-                          </>
-                        )}
-                        {item.status === "same" && (
-                          <HiMinusCircle color="#ffffff" />
-                        )}
-                        <h1 className="text-1xl md:text-2xl font-bold text-white">
-                          {item.name}
-                        </h1>
-                      </div>
-                      <MoneyCountUp moneyValue={item.score} />
-                      <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
-                        <div className="flex flex-col text-white">
-                          <small className="flex fle-row gap-2 items-center">
-                            {/* <FaCoins /> */}
-                            {item.lastFormattedScore}
-                          </small>
-                          <small className="flex fle-row gap-2 items-center">
-                            <FaRankingStar /> {item.lastPosition}º
-                          </small>
-                          <small
-                            className={`flex fle-row gap-2 items-center ${getTextColor(
-                              item.lastScoreDiff
-                            )}`}
-                          >
-                            <FaMoneyBillAlt />
-                            {item.lastScoreDiff}
-                          </small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-      </main>
-
-      {/* <Script
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7385654632311141"
-        crossorigin="anonymous"
-        strategy="afterInteractive"
-      />
-      <ins
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-client="ca-pub-7385654632311141"
-        data-ad-slot="5036828311"
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
-      <Script
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7385654632311141"
-        crossorigin="anonymous"
-        strategy="afterInteractive"
-      />
-      <ins
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-format="fluid"
-        data-ad-layout-key="-fg+1l-5v-mo+1qv"
-        data-ad-client="ca-pub-7385654632311141"
-        data-ad-slot="8784501639"
-      />
-      <Script strategy="afterInteractive">
-        {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-      </Script> */}
-    </div>
+                    </button>
+                  )}
+                  {teamStatus === "Pending" && (
+                    <span
+                      className="px-3 py-2 bg-yellow-500 text-gray-900 rounded-full flex items-center justify-center"
+                      aria-label="Pending Approval"
+                    >
+                      <FontAwesomeIcon icon={faCheckCircle as IconProp} />
+                    </span>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </InfiniteScroll>
+    </main>
   );
 }
