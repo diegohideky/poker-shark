@@ -34,7 +34,6 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
     const { name: teamName, pageName: teamPageName } = parsedBody.data;
 
     try {
-      console.log("teamPageName", teamPageName);
       const existingTeamByName = await teamRepo.findOne({
         where: { name: teamName },
       });
@@ -75,6 +74,7 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
 
       return res.status(201).json(savedTeam);
     } catch (error) {
+      console.error({ error });
       return res.status(500).json({ error: "Error creating team" });
     }
   } else if (req.method === "GET") {
