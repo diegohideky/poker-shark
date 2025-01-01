@@ -29,7 +29,9 @@ export class Team extends SoftDeleteEntity {
   @Column({ unique: true })
   pageName: string;
 
-  @OneToMany(() => TeamPlayer, (teamPlayer) => teamPlayer.team)
+  @OneToMany(() => TeamPlayer, (teamPlayer) => teamPlayer.team, {
+    nullable: true,
+  })
   players: Relation<TeamPlayer[]>;
 
   @Column({

@@ -36,11 +36,11 @@ export class Match extends SoftDeleteEntity {
   @Column({ type: "integer", nullable: true })
   addOn: number | null;
 
-  @ManyToOne(() => Game, { nullable: false, onDelete: "CASCADE" })
+  @ManyToOne(() => Game, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "gameId" })
   game: Relation<Game>;
 
-  @ManyToOne(() => Team, { nullable: false, onDelete: "CASCADE" })
+  @ManyToOne(() => Team, { nullable: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "teamId" })
   team: Relation<Team>;
 }

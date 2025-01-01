@@ -24,9 +24,9 @@ export class UserRole extends SoftDeleteEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.userRoles)
+  @ManyToOne(() => User, (user) => user.userRoles, { nullable: true })
   user: Relation<User>;
 
-  @ManyToOne(() => Role, (role) => role.userRoles)
+  @ManyToOne(() => Role, (role) => role.userRoles, { nullable: true })
   role: Relation<Role>;
 }

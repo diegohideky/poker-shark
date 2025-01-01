@@ -29,7 +29,10 @@ export class TeamPlayer extends SoftDeleteEntity {
   @Column()
   teamId: string;
 
-  @ManyToOne(() => User, (user) => user.teams, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, (user) => user.teams, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "userId" })
   user: Relation<User>;
 
