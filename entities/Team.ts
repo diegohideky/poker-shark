@@ -22,7 +22,7 @@ export class Team extends SoftDeleteEntity {
   @Column({ type: "uuid" })
   ownerId: string;
 
-  @ManyToOne(() => User, (user) => user.teams)
+  @ManyToOne(() => User, (user) => user.teams, { nullable: true })
   @JoinColumn({ name: "ownerId" })
   owner: Relation<User>;
 

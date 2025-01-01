@@ -47,7 +47,6 @@ const NewTeam = () => {
       showSuccessToast("Team created successfully!");
       router.push(`/t/${team.pageName}`);
     } catch (error) {
-      console.error(error);
       showErrorToast((error as any).response.data.message);
     } finally {
       setIsLoading(false);
