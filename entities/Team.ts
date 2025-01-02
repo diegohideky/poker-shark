@@ -2,9 +2,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  // ManyToOne,
   JoinColumn,
   Relation,
+  OneToOne,
   // OneToMany,
 } from "typeorm";
 import { User } from "./User";
@@ -22,7 +23,7 @@ export class Team extends SoftDeleteEntity {
   @Column({ type: "uuid" })
   ownerId: string;
 
-  @ManyToOne(() => User, (user) => user.teams)
+  @OneToOne(() => User)
   @JoinColumn({ name: "ownerId" })
   owner: Relation<User>;
 

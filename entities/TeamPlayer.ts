@@ -29,7 +29,7 @@ export class TeamPlayer extends SoftDeleteEntity {
   @Column()
   teamId: string;
 
-  @ManyToOne(() => User, (user) => user.teams)
+  @ManyToOne(() => User)
   @JoinColumn({ name: "userId" })
   user: Relation<User>;
 

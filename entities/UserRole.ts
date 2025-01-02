@@ -4,6 +4,7 @@ import {
   Column,
   DeleteDateColumn,
   ManyToOne,
+  JoinColumn,
   Relation,
 } from "typeorm";
 import { User } from "./User";
@@ -24,9 +25,11 @@ export class UserRole extends SoftDeleteEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.userRoles, { nullable: true })
+  @ManyToOne(() => User, (user) => user.userRoles, { cascade: false })
+  @JoinColumn({ name: "userId" })
   user: Relation<User>;
 
-  @ManyToOne(() => Role, (role) => role.userRoles, { nullable: true })
+  @ManyToOne(() => Role, (role) => role.userRoles, { cascade: false })
+  @JoinColumn({ name: "roleId" })
   role: Relation<Role>;
 }

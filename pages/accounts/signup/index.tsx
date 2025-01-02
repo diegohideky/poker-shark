@@ -6,6 +6,7 @@ import { signup } from "@services/accounts";
 import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { showErrorToast } from "@libs/utils";
 
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -54,9 +55,9 @@ const SignupPage: React.FC = () => {
     } catch (error) {
       console.log(error);
       if (error instanceof z.ZodError) {
-        error.errors.forEach((err) => toast.error(err.message));
+        error.errors.forEach((err) => showErrorToast(err.message));
       } else {
-        toast.error("An unexpected error occurred. Please try again.");
+        showErrorToast((error as any).response.data.message);
       }
     }
   };
@@ -160,7 +161,7 @@ const SignupPage: React.FC = () => {
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
               <button
-                onClick={() => router.push("/login")}
+                onClick={() => router.push("/accounts/login")}
                 className="text-indigo-600 hover:underline"
               >
                 Log In

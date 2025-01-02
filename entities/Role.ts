@@ -5,6 +5,7 @@ import {
   DeleteDateColumn,
   OneToMany,
   Relation,
+  // Relation,
 } from "typeorm";
 import { UserRole } from "./UserRole";
 import { SoftDeleteEntity } from "interfaces";
@@ -26,6 +27,8 @@ export class Role extends SoftDeleteEntity {
   @DeleteDateColumn()
   deletedAt: Date | null; // Optional, can be null
 
-  @OneToMany(() => UserRole, (userRole) => userRole.role, { nullable: true })
-  userRoles: Relation<UserRole[]>;
+  @OneToMany(() => UserRole, (userRole) => userRole.role, {
+    nullable: true,
+  })
+  userRoles?: Relation<UserRole[]>;
 }

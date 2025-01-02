@@ -11,12 +11,11 @@ const BottomNavBar = () => {
   const router = useRouter();
   const { user, setUserData, setTokenData } = useUser();
 
-  const logout = (e) => {
-    e.preventDefault();
-    localStorage.removeItem("token");
-
+  const logout = () => {
     setTokenData(null);
     setUserData(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
     router.push("/accounts/login");
   };
