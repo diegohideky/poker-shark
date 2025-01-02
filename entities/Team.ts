@@ -5,10 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
   Relation,
-  OneToMany,
+  // OneToMany,
 } from "typeorm";
 import { User } from "./User";
-import { TeamPlayer } from "./TeamPlayer";
+// import { TeamPlayer } from "./TeamPlayer";
 import { SoftDeleteEntity } from "interfaces";
 
 @Entity("teams")
@@ -22,17 +22,15 @@ export class Team extends SoftDeleteEntity {
   @Column({ type: "uuid" })
   ownerId: string;
 
-  @ManyToOne(() => User, (user) => user.teams, { nullable: true })
+  @ManyToOne(() => User, (user) => user.teams)
   @JoinColumn({ name: "ownerId" })
   owner: Relation<User>;
 
   @Column({ unique: true })
   pageName: string;
 
-  @OneToMany(() => TeamPlayer, (teamPlayer) => teamPlayer.team, {
-    nullable: true,
-  })
-  players: Relation<TeamPlayer[]>;
+  // @OneToMany(() => TeamPlayer, (teamPlayer) => teamPlayer.team)
+  // players: Relation<TeamPlayer[]>;
 
   @Column({
     type: "varchar",

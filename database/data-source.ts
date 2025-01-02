@@ -1,10 +1,9 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+import dotenv from "dotenv";
 import { Role } from "@entities/Role";
 import { User } from "@entities/User";
 import { UserRole } from "@entities/UserRole";
-
-import dotenv from "dotenv";
 import { Team } from "@entities/Team";
 import { TeamPlayer } from "@entities/TeamPlayer";
 import { Game } from "@entities/Game";
@@ -24,7 +23,7 @@ const AppDataSource = new DataSource({
   entities: [User, Role, UserRole, Team, TeamPlayer, Game, Match, MatchPlayer],
   migrations: ["dist/migrations/*.ts"],
   synchronize: false, // Disable in production and use migrations instead
-  logging: true,
+  logging: false,
 });
 
 export default AppDataSource;
