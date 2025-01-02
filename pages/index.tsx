@@ -71,7 +71,7 @@ export default function TeamsPage() {
   };
 
   const getTeamStatus = (teamId) => {
-    const teamPlayer = user["teamPlayers"]?.find((tp) => tp.teamId === teamId);
+    const teamPlayer = user?.teamPlayers?.find((tp) => tp.teamId === teamId);
     if (teamPlayer) {
       if (teamPlayer.status === "accepted") return "Leave Team";
       if (teamPlayer.status === "pending") return "Pending";
@@ -157,7 +157,7 @@ export default function TeamsPage() {
                   <span>{team.name}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  {team.ownerId === user.id && (
+                  {team.ownerId === user?.id && (
                     <button
                       onClick={() => goToRequests(team.id)}
                       className="px-3 py-2 bg-blue-600 rounded-full text-gray-100 hover:bg-blue-500 cursor-pointer"
@@ -188,7 +188,7 @@ export default function TeamsPage() {
                   )}
                   {teamStatus === "Pending" && (
                     <span
-                      className="px-3 py-2 bg-yellow-500 text-gray-900 rounded-full flex items-center justify-center"
+                      className="px-3 py-2 bg-green-600 rounded-full text-gray-100 hover:bg-green-500 cursor-pointer"
                       aria-label="Pending Approval"
                     >
                       <FontAwesomeIcon icon={faCheckCircle as IconProp} />

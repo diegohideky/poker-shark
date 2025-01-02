@@ -8,9 +8,10 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
+import { TeamPlayer } from "@entities/TeamPlayer";
 
 interface UserContextProps {
-  user: User | null;
+  user: (User & { teamPlayers?: TeamPlayer[] }) | null;
   token: string | null;
   setUserData: (user: User | null) => void;
   setTokenData: (token: string | null) => void;
