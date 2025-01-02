@@ -130,6 +130,7 @@ const SignupPage: React.FC = () => {
               className="block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             />
             <FontAwesomeIcon
+              // @ts-ignore
               icon={showPassword ? faEyeSlash : faEye}
               className="absolute right-3 top-11 text-gray-500 cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
@@ -159,6 +160,7 @@ const SignupPage: React.FC = () => {
               className="block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             />
             <FontAwesomeIcon
+              // @ts-ignore
               icon={showPasswordConfirmation ? faEyeSlash : faEye}
               className="absolute right-3 top-11 text-gray-500 cursor-pointer"
               onClick={() =>
