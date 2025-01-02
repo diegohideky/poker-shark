@@ -10,6 +10,8 @@ import { UserNextApiRequest } from "types";
 import { uploadFileToS3 } from "@libs/uploader";
 import { parseForm } from "@libs/formData";
 import { generateUniquePageNames } from "@libs/utils";
+import { TeamPlayer, TeamPlayerStatus } from "@entities/TeamPlayer";
+import { Role, RoleNames } from "@entities/Role";
 
 export const config = {
   api: {
@@ -19,6 +21,8 @@ export const config = {
 
 async function handler(req: UserNextApiRequest, res: NextApiResponse) {
   const teamRepo = dataSource.getRepository(Team);
+  const teamPlayerRepo = dataSource.getRepository(TeamPlayer);
+  const roleRepo = dataSource.getRepository(Role);
 
   if (req.method === "POST") {
     const { fields, files } = await parseForm(req); // Await the promise
@@ -71,6 +75,19 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
         ownerId: req.user.id,
       });
       const savedTeam = await teamRepo.save(newTeam);
+
+      const playerRole = await roleRepo.findOne({
+        where: { name: RoleNames.PLAYER },
+      });
+
+      const newRequest = teamPlayerRepo.create({
+        teamId: savedTeam.id,
+        userId: req.user.id,
+        roleId: playerRole?.id,
+        status: TeamPlayerStatus.ACCEPTED,
+      });
+      const savedRequest = await teamPlayerRepo.save(newRequest);
+      console.log({ savedRequest });
 
       return res.status(201).json(savedTeam);
     } catch (error) {

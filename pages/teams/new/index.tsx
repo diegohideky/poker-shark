@@ -3,8 +3,10 @@ import { useRouter } from "next/router";
 import { createTeam } from "@services/teams";
 import { showErrorToast, showInfoToast, showSuccessToast } from "@libs/utils";
 import LoadingOverlay from "@components/LoadingOverlay";
+import { useUser } from "@contexts/UserContext";
 
 const NewTeam = () => {
+  const { getCurrentUser } = useUser();
   const [name, setName] = useState("");
   const [pageName, setPageName] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
@@ -44,6 +46,7 @@ const NewTeam = () => {
 
     try {
       const team = await createTeam(formData);
+      getCurrentUser();
       showSuccessToast("Team created successfully!");
       router.push(`/t/${team.pageName}`);
     } catch (error) {

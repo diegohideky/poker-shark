@@ -9,30 +9,49 @@ import { useUser } from "@contexts/UserContext";
 
 const BottomNavBar = () => {
   const router = useRouter();
-  const { user, setUserData } = useUser();
+  const { user, setUserData, setTokenData } = useUser();
 
-  const logout = () => {
+  const logout = (e) => {
+    e.preventDefault();
     localStorage.removeItem("token");
 
+    setTokenData(null);
     setUserData(null);
 
     router.push("/accounts/login");
   };
 
   const navItems = [
-    { label: "Teams", icon: faShield, action: () => router.push("/") },
+    {
+      label: "Teams",
+      icon: faShield,
+      action: () => router.push("/"),
+      pathname: "/",
+    },
     {
       label: "Career",
       icon: faChartColumn,
       action: () => router.push("/career"),
+      pathname: "/career",
     },
-    { label: "Logout", icon: faSignOutAlt, action: logout },
+    {
+      label: "Logout",
+      icon: faSignOutAlt,
+      action: logout,
+      pathname: "/logout",
+    },
   ];
+
+  const pathname = router.pathname;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white flex justify-around items-center h-20 shadow-lg">
       <div
-        className="flex flex-col items-center space-y-1 cursor-pointer"
+        className={`w-full  p-2 flex flex-col items-center cursor-pointer transition duration-200 ease-in-out ${
+          pathname === "/profile"
+            ? "border-green-500 border-2 text-green-500"
+            : ""
+        }`}
         onClick={() => router.push("/profile")}
       >
         <img
@@ -47,7 +66,11 @@ const BottomNavBar = () => {
       {navItems.map((item, index) => (
         <div
           key={index}
-          className="flex flex-col items-center space-y-1 cursor-pointer"
+          className={`w-full p-2 flex flex-col items-center space-y-1 cursor-pointer transition duration-200 ease-in-out ${
+            pathname === item.pathname
+              ? "border-green-500 border-2 text-green-500"
+              : ""
+          }`}
           onClick={item.action}
         >
           {/* @ts-ignore */}
