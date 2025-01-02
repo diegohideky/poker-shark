@@ -34,9 +34,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 
     const isAccountPage = router.pathname.startsWith("/accounts");
 
+    console.log({ isAccountPage });
+
     if (!isAccountPage && (!savedToken || !savedUser)) {
       router.push("/accounts/login");
-    } else {
+    } else if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }

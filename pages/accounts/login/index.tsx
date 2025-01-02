@@ -114,19 +114,19 @@ const LoginPage = () => {
 
         <button
           type="submit"
-          className="w-full bg-green-600 text-gray-50 rounded-md p-2 hover:bg-yellow-600 transition duration-200 flex items-center justify-center"
+          className="w-full bg-green-600 text-gray-50 rounded-md p-2 hover:bg-green-700 transition duration-200 flex items-center justify-center"
           disabled={loading}
         >
           Login
         </button>
 
         <div className="w-full mt-5 flex justify-end">
-          {/* add a sinup link button */}
           <button
-            className="text-blue-400 hover:text-blue-700 transition duration-200"
+            type="button"
             onClick={() => router.push("/accounts/signup")}
+            className="w-full border border-2 border-green-600 text-gray-50 rounded-md p-2 hover:bg-green-700 transition duration-200 flex items-center justify-center"
           >
-            Don&apos;t have an account? Sign up
+            Register
           </button>
         </div>
       </form>

@@ -4,9 +4,10 @@ import {
   Column,
   OneToMany,
   Relation,
+  // Relation,
 } from "typeorm";
 import { UserRole } from "./UserRole";
-import { Team } from "./Team";
+// import { Team } from "./Team";
 import { SoftDeleteEntity } from "interfaces";
 
 @Entity({ name: "users" })
@@ -31,9 +32,11 @@ export class User extends SoftDeleteEntity {
   })
   photoUrl: string | null;
 
-  @OneToMany(() => UserRole, (userRole) => userRole.user)
-  userRoles: Relation<UserRole[]>;
+  @OneToMany(() => UserRole, (userRole) => userRole.user, {
+    nullable: true,
+  })
+  userRoles?: Relation<UserRole[]>;
 
-  @OneToMany(() => Team, (team) => team.owner)
-  teams: Relation<Team[]>;
+  // @OneToMany(() => Team, (team) => team.owner)
+  // teams: Relation<Team[]>;
 }

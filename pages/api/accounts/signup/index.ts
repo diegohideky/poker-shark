@@ -49,11 +49,15 @@ async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
     });
 
     const user = await userRepo.save(newUser);
-    const newUserRole = userRoleRepo.create({
-      userId: user.id,
-      roleId: playerRole.id,
-    });
-    await userRoleRepo.save(newUserRole);
+    await userRoleRepo
+      .createQueryBuilder()
+      .insert()
+      .into(UserRole)
+      .values({
+        userId: user.id,
+        roleId: playerRole.id,
+      })
+      .execute();
 
     return res
       .status(201)
