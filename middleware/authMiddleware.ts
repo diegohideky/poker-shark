@@ -40,6 +40,7 @@ export const authMiddleware = (handler: NextApiHandler) => {
 
       return handler(req, res);
     } catch (err) {
+      console.error({ err });
       return res.status(401).json({ message: "Invalid or expired token" });
     }
   };

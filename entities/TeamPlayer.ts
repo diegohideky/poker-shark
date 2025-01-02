@@ -6,7 +6,7 @@ import {
   Column,
   Relation,
 } from "typeorm";
-import { Team } from "./Team";
+// import { Team } from "./Team";
 import { User } from "./User";
 import { Role } from "./Role";
 import { SoftDeleteEntity } from "interfaces";
@@ -22,24 +22,21 @@ export class TeamPlayer extends SoftDeleteEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Team, (team) => team.players, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "teamId" })
-  team: Relation<Team>;
+  // @ManyToOne(() => Team, (team) => team.players)
+  // @JoinColumn({ name: "teamId" })
+  // team: Relation<Team>;
 
   @Column()
   teamId: string;
 
-  @ManyToOne(() => User, (user) => user.teams, {
-    nullable: true,
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(() => User, (user) => user.teams)
   @JoinColumn({ name: "userId" })
   user: Relation<User>;
 
   @Column()
   userId: string;
 
-  @ManyToOne(() => Role, { nullable: true, onDelete: "SET NULL" })
+  @ManyToOne(() => Role)
   @JoinColumn({ name: "roleId" })
   role: Relation<Role>;
 

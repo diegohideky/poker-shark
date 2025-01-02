@@ -37,7 +37,6 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
       const existingTeamByName = await teamRepo.findOne({
         where: { name: teamName },
       });
-      console.log({ existingTeamByName });
       if (existingTeamByName) {
         return res.status(400).json({ error: "Team already exists" });
       }
@@ -45,7 +44,6 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
       const existingTeamByPageName = await teamRepo.findOne({
         where: { pageName: teamPageName },
       });
-      console.log({ existingTeamByPageName });
       if (existingTeamByPageName) {
         const suggestions = await generateUniquePageNames(teamName, teamRepo);
         return res.status(400).json({
@@ -59,7 +57,6 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
       if (imageFile && imageFile.filepath) {
         const fileBuffer = await fs.promises.readFile(imageFile.filepath);
         const mimeType = imageFile.mimetype || "image/jpeg";
-        console.log({ mimeType });
         photoUrl = await uploadFileToS3(
           fileBuffer,
           imageFile.originalFilename,
@@ -67,17 +64,14 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
         );
       }
 
-      console.log({ photoUrl });
       const newTeam = teamRepo.create({
         name: teamName,
         pageName: teamPageName,
         photoUrl,
         ownerId: req.user.id,
       });
-      console.log({ newTeam });
       const savedTeam = await teamRepo.save(newTeam);
 
-      console.log({ savedTeam });
       return res.status(201).json(savedTeam);
     } catch (error) {
       console.error({ error });
