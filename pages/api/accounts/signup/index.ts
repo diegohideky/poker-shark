@@ -11,18 +11,18 @@ import { UserRole } from "@entities/UserRole";
 
 async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ message: "Method not allowed" });
   }
 
   const parsed = SignupSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res.status(400).json({ error: parsed.error.errors });
+    return res.status(400).json({ message: parsed.error.errors });
   }
 
   const { name, username, password, passwordConfirmation } = parsed.data;
 
   if (password !== passwordConfirmation) {
-    return res.status(400).json({ error: "Passwords do not match" });
+    return res.status(400).json({ message: "Passwords do not match" });
   }
 
   try {
@@ -32,7 +32,7 @@ async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
 
     const existingUser = await userRepo.findOne({ where: { username } });
     if (existingUser) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const playerRole = await roleRepo.findOne({
@@ -64,7 +64,7 @@ async function signupHandler(req: UserNextApiRequest, res: NextApiResponse) {
       .json({ id: user.id, message: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 }
 

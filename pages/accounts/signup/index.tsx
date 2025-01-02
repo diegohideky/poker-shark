@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { z } from "zod";
-import { signup } from "@services/accounts";
-import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { showErrorToast } from "@libs/utils";
+import { signup } from "@services/accounts";
+import { z } from "zod";
 
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -15,6 +14,14 @@ const signupSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   passwordConfirmation: z.string().min(6, "Confirm Password is required"),
 });
+
+const passwordRules = [
+  { regex: /.{8,}/, message: "At least 8 characters" },
+  { regex: /[a-z]/, message: "At least one lowercase letter" },
+  { regex: /[A-Z]/, message: "At least one uppercase letter" },
+  { regex: /[0-9]/, message: "At least one number" },
+  { regex: /[^a-zA-Z0-9]/, message: "At least one special character" },
+];
 
 const SignupPage: React.FC = () => {
   const router = useRouter();
@@ -27,6 +34,14 @@ const SignupPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState<boolean>(false);
+
+  const validateRules = (input: string) =>
+    passwordRules.map((rule) => ({
+      ...rule,
+      isValid: rule.regex.test(input),
+    }));
+
+  const passwordValidation = validateRules(password);
 
   const handleSignup = async () => {
     try {
@@ -64,11 +79,6 @@ const SignupPage: React.FC = () => {
 
   return (
     <main className="bg-gray-100 min-h-screen flex items-center justify-center">
-      <Head>
-        <title>Sign Up</title>
-        <meta name="description" content="Sign up for an account" />
-      </Head>
-
       <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-8">
         <h1 className="text-2xl font-bold mb-6 text-center">Create Account</h1>
 
@@ -81,7 +91,7 @@ const SignupPage: React.FC = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             />
           </div>
 
@@ -93,7 +103,7 @@ const SignupPage: React.FC = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             />
           </div>
 
@@ -105,7 +115,7 @@ const SignupPage: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             />
           </div>
 
@@ -117,14 +127,25 @@ const SignupPage: React.FC = () => {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             />
             <FontAwesomeIcon
-              //@ts-ignore
               icon={showPassword ? faEyeSlash : faEye}
               className="absolute right-3 top-11 text-gray-500 cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             />
+            <ul className="mt-2 text-sm">
+              {passwordValidation.map((rule, idx) => (
+                <li
+                  key={idx}
+                  className={`${
+                    rule.isValid ? "text-green-600" : "text-gray-500"
+                  }`}
+                >
+                  {rule.message}
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="relative">
@@ -135,11 +156,9 @@ const SignupPage: React.FC = () => {
               type={showPasswordConfirmation ? "text" : "password"}
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
-              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             />
-            {/* here */}
             <FontAwesomeIcon
-              //@ts-ignore
               icon={showPasswordConfirmation ? faEyeSlash : faEye}
               className="absolute right-3 top-11 text-gray-500 cursor-pointer"
               onClick={() =>
@@ -155,18 +174,6 @@ const SignupPage: React.FC = () => {
             >
               Sign Up
             </button>
-          </div>
-
-          <div className="text-center mt-4">
-            <p className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <button
-                onClick={() => router.push("/accounts/login")}
-                className="text-indigo-600 hover:underline"
-              >
-                Log In
-              </button>
-            </p>
           </div>
         </div>
       </div>
