@@ -8,7 +8,7 @@ import { authMiddleware } from "@middleware/authMiddleware";
 import { authorize } from "@middleware/authorize";
 import { MatchPlayerSchema, PaginationSchema } from "./schema";
 import { UserNextApiRequest } from "types";
-import { TeamPlayer } from "@entities/TeamPlayer";
+import { TeamPlayer, TeamPlayerStatus } from "@entities/TeamPlayer";
 
 async function handler(req: UserNextApiRequest, res: NextApiResponse) {
   const matchPlayerRepo = dataSource.getRepository(MatchPlayer);
@@ -96,6 +96,9 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
           { matchId }
         )
         .where("tp.teamId = :teamId", { teamId: match.teamId })
+        .andWhere('tp."status" = :status', {
+          status: TeamPlayerStatus.ACCEPTED,
+        })
         .skip(offset)
         .take(limit)
         .select([

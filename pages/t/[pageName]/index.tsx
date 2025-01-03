@@ -46,7 +46,7 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center bg-gray-900 text-gray-50 p-6">
+    <main className="min-h-screen flex flex-col items-center bg-gray-900 sm:mx-auto text-gray-50 p-2">
       <Head>
         <title>{team.name} - Team Details</title>
         <meta name="description" content={`Details about ${team.name}`} />
@@ -78,16 +78,16 @@ const TeamPage: React.FC<TeamProps> = ({ team }) => {
               {games.map((game) => (
                 <li
                   key={game.id}
-                  className="bg-gray-700 p-4 rounded-lg flex justify-between items-center"
+                  className="bg-gray-700 p-4 rounded-lg flex flex-col gap-3"
                 >
                   {/* Game Details */}
-                  <div>
+                  <div className="flex items-center justify-between md:justify-start md:gap-5">
                     <p className="text-lg font-medium">{game.nickname}</p>
                     <p className="text-gray-400 text-sm italic">{game.type}</p>
                   </div>
 
                   {/* Options with Icons */}
-                  <div className="flex space-x-4">
+                  <div className="flex justify-end space-x-4">
                     {/* New Matches */}
                     <button
                       onClick={() =>
