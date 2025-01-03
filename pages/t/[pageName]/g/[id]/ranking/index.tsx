@@ -1,9 +1,10 @@
 // @ts-nocheck
 import { useEffect, useState, useRef } from "react";
 import CountUp from "react-countup";
+import dayjs from "dayjs";
+import { FaArrowLeft, FaArrowRight, FaMoneyBillAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { FaRankingStar } from "react-icons/fa6";
-import { FaMoneyBillAlt } from "react-icons/fa";
 import { BsArrowUpCircleFill, BsArrowDownCircleFill } from "react-icons/bs";
 import { HiMinusCircle } from "react-icons/hi2";
 import Head from "next/head";
@@ -16,7 +17,7 @@ import { getTeamsByPageName } from "@services/teams";
 import LoadingOverlay from "@components/LoadingOverlay";
 import { getGameById } from "@services/games";
 import Typography from "@components/Typography";
-import { getTextColor } from "@libs/utils";
+import { getTextColor, showErrorToast } from "@libs/utils";
 
 const titulo = "Poker Shark";
 const descricao = "O poker mais sanguinário do Grand Splendor";
@@ -34,6 +35,12 @@ const unitOptions = [
 export default function Home({ team }): React.FC<TeamProps> {
   const router = useRouter();
   const { id: queryGameId } = router.query;
+  const [startDate, setStartDate] = useState(
+    dayjs().startOf("week").format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = useState(
+    dayjs().endOf("week").format("YYYY-MM-DD")
+  );
   const [ranking, setRanking] = useState([]);
   const [caixinha, setCaixinha] = useState(0);
   const [filteredRanking, setFilteredRanking] = useState([]);
@@ -41,29 +48,69 @@ export default function Home({ team }): React.FC<TeamProps> {
   const [selectedUnit, setSelectedUnit] = useState<string>("week");
   const [game, setGame] = useState(null);
 
+  const adjustDateRange = (direction) => {
+    let newStartDate, newEndDate;
+
+    if (direction === "previous") {
+      newStartDate = dayjs(startDate)
+        .subtract(1, selectedUnit)
+        .startOf(selectedUnit);
+      newEndDate = dayjs(newStartDate).endOf(selectedUnit);
+    } else if (direction === "next") {
+      newStartDate = dayjs(endDate).add(1, selectedUnit).startOf(selectedUnit);
+      newEndDate = dayjs(newStartDate).endOf(selectedUnit);
+    }
+
+    setStartDate(newStartDate.format("YYYY-MM-DD"));
+    setEndDate(newEndDate.format("YYYY-MM-DD"));
+  };
+
   useEffect(() => {
-    const fetchRanking = async () => {
-      setLoading(true);
-
-      try {
-        const data = await getRanking({
-          teamId: team.id,
-          gameId: queryGameId,
-          unit: selectedUnit,
-        });
-
-        setRanking(data.ranking);
-        setFilteredRanking(data.ranking);
-        setCaixinha(data.caixinha || 0);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+    const calculateDateRange = () => {
+      const newStartDate = dayjs().startOf(selectedUnit).format("YYYY-MM-DD");
+      const newEndDate = dayjs().endOf(selectedUnit).format("YYYY-MM-DD");
+      setStartDate(newStartDate);
+      setEndDate(newEndDate);
     };
 
-    fetchRanking();
+    calculateDateRange();
   }, [selectedUnit]);
+
+  const fetchRanking = async () => {
+    setLoading(true);
+
+    try {
+      const data = await getRanking({
+        teamId: team.id,
+        gameId: queryGameId,
+        unit: selectedUnit,
+        startDate,
+        endDate,
+      });
+
+      setRanking(data.ranking);
+      setFilteredRanking(data.ranking);
+      setCaixinha(data.caixinha || 0);
+    } catch (err) {
+      console.error(err);
+      setRanking([]);
+      setFilteredRanking([]);
+      setCaixinha(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const delay = 500; // Adjust debounce delay as needed (in milliseconds)
+    const handler = setTimeout(() => {
+      if (startDate && endDate) {
+        fetchRanking();
+      }
+    }, delay);
+
+    return () => clearTimeout(handler);
+  }, [startDate, endDate]);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -205,6 +252,19 @@ export default function Home({ team }): React.FC<TeamProps> {
           ))}
         </section>
 
+        <div className="w-full flex justify-between text-white py-4">
+          <button onClick={() => adjustDateRange("previous")}>
+            <FaArrowLeft />
+          </button>
+          <span>
+            {dayjs(startDate).format("DD/MM/YYYY")} to{" "}
+            {dayjs(endDate).format("DD/MM/YYYY")}
+          </span>
+          <button onClick={() => adjustDateRange("next")}>
+            <FaArrowRight />
+          </button>
+        </div>
+
         <section>
           <div className="flex flex-row items-center justify-center w-full">
             <input
@@ -230,73 +290,81 @@ export default function Home({ team }): React.FC<TeamProps> {
         <section className="flex flex-row items-center justify-center p-5">
           <div className="flex flex-col items-center justify-center">
             <div className="flex flex-col items-center justify-center gap-8">
-              {filteredRanking.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex flex-row items-center gap-5 w-full"
-                >
-                  <div className="flex flex-row items-center justify-center gap-4 relative">
-                    <img
-                      className="w-40 h-40 relative md:ml-5 rounded-full"
-                      src={`${
-                        process.env.NEXT_PUBLIC_API_URL ||
-                        "http://localhost:3000/api"
-                      }/files/${item?.photoUrl || "user-picture-default.avif"}`}
-                      alt="Poker Shark"
-                    />
-                    <RankingBadge
-                      position={item.position}
-                      className="absolute bottom-0 left-0"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="flex flex-row items-center gap-2">
-                      {item.status === "up" && (
-                        <>
-                          <BsArrowUpCircleFill color="#22c55e" />
-                          <h4 className="text-[#22c55e]">
-                            {item.positionDiff}
-                          </h4>
-                        </>
-                      )}
-                      {item.status === "down" && (
-                        <>
-                          <BsArrowDownCircleFill color="#ef4444" />
-                          <h4 className="text-[#ef4444]">
-                            {item.positionDiff}
-                          </h4>
-                        </>
-                      )}
-                      {item.status === "same" && (
-                        <HiMinusCircle color="#ffffff" />
-                      )}
-                      <h1 className="text-1xl md:text-2xl font-bold text-white">
-                        {item.name}
-                      </h1>
+              {!filteredRanking.length ? (
+                <Typography className="text-white italic" variant="highlight">
+                  No data found :(
+                </Typography>
+              ) : (
+                filteredRanking.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-row items-center gap-5 w-full"
+                  >
+                    <div className="flex flex-row items-center justify-center gap-4 relative">
+                      <img
+                        className="w-40 h-40 relative md:ml-5 rounded-full"
+                        src={`${
+                          process.env.NEXT_PUBLIC_API_URL ||
+                          "http://localhost:3000/api"
+                        }/files/${
+                          item?.photoUrl || "user-picture-default.avif"
+                        }`}
+                        alt="Poker Shark"
+                      />
+                      <RankingBadge
+                        position={item.position}
+                        className="absolute bottom-0 left-0"
+                      />
                     </div>
-                    <MoneyCountUp moneyValue={item.score} />
-                    <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
-                      <div className="flex flex-col text-white">
-                        <small className="flex fle-row gap-2 items-center">
-                          {/* <FaCoins /> */}
-                          {item.lastFormattedScore}
-                        </small>
-                        <small className="flex fle-row gap-2 items-center">
-                          <FaRankingStar /> {item.lastPosition}º
-                        </small>
-                        <small
-                          className={`flex fle-row gap-2 items-center ${getTextColor(
-                            item.lastScoreDiff
-                          )}`}
-                        >
-                          <FaMoneyBillAlt />
-                          {item.lastScoreDiff}
-                        </small>
+                    <div className="flex flex-col">
+                      <div className="flex flex-row items-center gap-2">
+                        {item.status === "up" && (
+                          <>
+                            <BsArrowUpCircleFill color="#22c55e" />
+                            <h4 className="text-[#22c55e]">
+                              {item.positionDiff}
+                            </h4>
+                          </>
+                        )}
+                        {item.status === "down" && (
+                          <>
+                            <BsArrowDownCircleFill color="#ef4444" />
+                            <h4 className="text-[#ef4444]">
+                              {item.positionDiff}
+                            </h4>
+                          </>
+                        )}
+                        {item.status === "same" && (
+                          <HiMinusCircle color="#ffffff" />
+                        )}
+                        <h1 className="text-1xl md:text-2xl font-bold text-white">
+                          {item.name}
+                        </h1>
+                      </div>
+                      <MoneyCountUp moneyValue={item.score} />
+                      <div className="mt-4 p-2 border-[1px] rounded border-white w-[120px]">
+                        <div className="flex flex-col text-white">
+                          <small className="flex fle-row gap-2 items-center">
+                            {/* <FaCoins /> */}
+                            {item.lastFormattedScore}
+                          </small>
+                          <small className="flex fle-row gap-2 items-center">
+                            <FaRankingStar /> {item.lastPosition}º
+                          </small>
+                          <small
+                            className={`flex fle-row gap-2 items-center ${getTextColor(
+                              item.lastScoreDiff
+                            )}`}
+                          >
+                            <FaMoneyBillAlt />
+                            {item.lastScoreDiff}
+                          </small>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </section>
