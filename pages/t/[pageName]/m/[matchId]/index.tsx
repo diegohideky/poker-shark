@@ -122,6 +122,8 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   };
 
   const copyScoreToClipboard = (score: number) => {
+    alert(score);
+    return;
     const copiedScore = Math.abs(score).toString();
     navigator.clipboard.writeText(copiedScore).then(() => {
       showSuccessToast("Score copied to clipboard!");
@@ -222,7 +224,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   const goTo = (path: string) => navigate.push(path);
 
   return (
-    <main className="min-h-screen flex flex-col items-center bg-gray-900 text-gray-50 p-6">
+    <main className="min-h-screen flex flex-col items-center bg-gray-900 text-gray-50 p-2">
       <Head>
         <title>{team.name} - Match</title>
         <meta name="description" content={`Match Details for ${team.name}`} />
@@ -311,7 +313,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
               {players.map((player) => (
                 <li
                   key={player.id}
-                  className="p-2 border rounded-md flex justify-between items-center"
+                  className="px-2 py-4 border rounded-md flex justify-between items-center"
                 >
                   <div className="flex items-center space-x-4">
                     {player.user.photoUrl ? (
@@ -337,7 +339,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex justify-between items-center gap-2">
+                  <div className="flex flex-col justify-center items-center gap-3">
                     <input
                       type="text"
                       value={scores[player.id]}
@@ -348,25 +350,33 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                       onBlur={() => handleBlur(player.id)}
                       className="w-20 border rounded-md p-1 text-center text-black"
                     />
-                    <button
-                      className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded-full"
-                      onClick={() =>
-                        copyScoreToClipboard(player.matchPlayer.score)
-                      }
-                    >
-                      <MdAttachMoney />
-                    </button>
-                    <button
-                      className={`flex items-center ${
-                        player.user.pix
-                          ? "bg-yellow-500 hover:bg-yellow-600"
-                          : "bg-gray-500"
-                      } text-white py-2 px-3 rounded-full`}
-                      onClick={() => copyPixToClipboard(player.user.pix)}
-                      disabled={!player.user.pix}
-                    >
-                      <FaPix />
-                    </button>
+                    <div className="w-full flex flex-row justify-between gap-1">
+                      <button
+                        className={`flex items-center ${
+                          convertToCents(scores[player.id])
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-gray-500"
+                        } text-white py-1 px-2 rounded-full`}
+                        onClick={() =>
+                          copyScoreToClipboard(
+                            convertToCents(scores[player.id])
+                          )
+                        }
+                      >
+                        <MdAttachMoney />
+                      </button>
+                      <button
+                        className={`flex items-center ${
+                          player.user.pix
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-gray-500"
+                        } text-white py-1 px-2 rounded-full`}
+                        onClick={() => copyPixToClipboard(player.user.pix)}
+                        disabled={!player.user.pix}
+                      >
+                        <FaPix />
+                      </button>
+                    </div>
                   </div>
                 </li>
               ))}
