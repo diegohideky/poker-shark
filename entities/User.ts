@@ -32,6 +32,20 @@ export class User extends SoftDeleteEntity {
   })
   photoUrl: string | null;
 
+  @Column({
+    type: "varchar",
+    nullable: true,
+    comment: "A random key, CPF, email, or cellphone number for PIX",
+  })
+  pix: string | null;
+
+  @Column({
+    type: "boolean",
+    default: false,
+    comment: "Indicates if the user should appear in the ranking",
+  })
+  showInRanking: boolean;
+
   @OneToMany(() => UserRole, (userRole) => userRole.user, {
     nullable: true,
   })
