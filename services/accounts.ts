@@ -1,3 +1,4 @@
+import { User } from "@entities/User";
 import api from "@libs/api";
 
 const endpoint = "/accounts";
@@ -14,6 +15,18 @@ export const getCurrent = async () => {
   const token = localStorage.getItem("token");
 
   const response = await api.get(`${endpoint}/current`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export const updateCurrent = async (params: Partial<User>) => {
+  const token = localStorage.getItem("token");
+
+  const response = await api.patch(`${endpoint}/current`, params, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

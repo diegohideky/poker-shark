@@ -12,10 +12,12 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Match } from "@entities/Match";
-import { FaClipboard, FaEye, FaPlus } from "react-icons/fa6";
+import { FaClipboard, FaEye, FaPlus, FaPix } from "react-icons/fa6";
 import { showSuccessToast } from "@libs/utils";
 import { FaTrophy } from "react-icons/fa";
+import { MdAttachMoney } from "react-icons/md";
 import { formatScore } from "@libs/format";
+import LoadingOverlay from "@components/LoadingOverlay";
 
 interface Player {
   id: string;
@@ -24,6 +26,7 @@ interface Player {
     name: string;
     username: string;
     photoUrl?: string;
+    pix?: string;
   };
   matchPlayer: {
     id?: string;
@@ -48,10 +51,12 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   const [totalPlayers, setTotalPlayers] = useState<number>(0);
   const [scores, setScores] = useState<{ [key: string]: string }>({});
   const [match, setMatch] = useState<Match | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useRouter();
 
   const fetchPlayers = async () => {
     if (team) {
+      setIsLoading(true);
       try {
         const { total, data } = await getMatchPlayers(matchId, {});
         setPlayers(data);
@@ -67,6 +72,8 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
         setScores(initialScores);
       } catch (error) {
         console.error("Error fetching match players:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -107,10 +114,23 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
     return `Poker table ${matchDate}\n\n${playerScores}\n\nDiff: ${matchDiff}`;
   };
 
-  const copyToClipboard = () => {
+  const copySummaryToClipboard = () => {
     const rankingText = generateRankingText();
     navigator.clipboard.writeText(rankingText).then(() => {
       showSuccessToast("Ranking copied to clipboard!");
+    });
+  };
+
+  const copyScoreToClipboard = (score: number) => {
+    const copiedScore = Math.abs(score).toString();
+    navigator.clipboard.writeText(copiedScore).then(() => {
+      showSuccessToast("Score copied to clipboard!");
+    });
+  };
+
+  const copyPixToClipboard = (pix: string) => {
+    navigator.clipboard.writeText(pix).then(() => {
+      showSuccessToast("Pix copied to clipboard!");
     });
   };
 
@@ -184,7 +204,6 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
     if (gameType === "CASH") {
       return formatScore(
         Object.values(scores).reduce((acc, curr) => {
-          console.log({ curr: convertToCents(curr) });
           return acc - convertToCents(curr);
         }, 0)
       );
@@ -208,6 +227,8 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
         <title>{team.name} - Match</title>
         <meta name="description" content={`Match Details for ${team.name}`} />
       </Head>
+
+      <LoadingOverlay isLoading={isLoading} />
 
       <div className="w-full max-w-4xl bg-gray-800 rounded-lg shadow-md p-6">
         {/* Team Header */}
@@ -277,7 +298,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
               </p>
             </div>
             <button
-              onClick={copyToClipboard}
+              onClick={copySummaryToClipboard}
               className="flex items-center bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-full"
             >
               <FaClipboard className="mr-1" />
@@ -316,7 +337,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                       </p>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex justify-between items-center gap-2">
                     <input
                       type="text"
                       value={scores[player.id]}
@@ -327,6 +348,25 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                       onBlur={() => handleBlur(player.id)}
                       className="w-20 border rounded-md p-1 text-center text-black"
                     />
+                    <button
+                      className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded-full"
+                      onClick={() =>
+                        copyScoreToClipboard(player.matchPlayer.score)
+                      }
+                    >
+                      <MdAttachMoney />
+                    </button>
+                    <button
+                      className={`flex items-center ${
+                        player.user.pix
+                          ? "bg-yellow-500 hover:bg-yellow-600"
+                          : "bg-gray-500"
+                      } text-white py-2 px-3 rounded-full`}
+                      onClick={() => copyPixToClipboard(player.user.pix)}
+                      disabled={!player.user.pix}
+                    >
+                      <FaPix />
+                    </button>
                   </div>
                 </li>
               ))}

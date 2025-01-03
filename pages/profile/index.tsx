@@ -1,6 +1,6 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useUser } from "@contexts/UserContext";
-import { changePassword, updatePhoto } from "@services/accounts";
+import { changePassword, updateCurrent, updatePhoto } from "@services/accounts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import LoadingOverlay from "@components/LoadingOverlay";
@@ -17,6 +17,15 @@ const Profile: React.FC = () => {
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
+  const [pix, setPix] = useState<string>();
+  const [showInRanking, setShowInRanking] = useState<boolean>();
+
+  useEffect(() => {
+    if (user) {
+      setPix(user.pix);
+      setShowInRanking(user.showInRanking);
+    }
+  }, [user]);
 
   const handleChangePassword = async () => {
     setIsLoading(true);
@@ -60,6 +69,25 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleChangeCurrentUser = async (event: any) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await updateCurrent({
+        pix,
+        showInRanking,
+      });
+      setUserData(response); // Update UserContext
+      showSuccessToast("User Updated");
+    } catch (error) {
+      console.log({ error });
+      showErrorToast((error as any).response.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-xl mx-auto mt-10 p-5 bg-white shadow-md rounded-lg">
       <LoadingOverlay isLoading={isLoading} />
@@ -91,6 +119,39 @@ const Profile: React.FC = () => {
         />
       </div>
 
+      <div className="mb-5">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Pix
+        </label>
+        <input
+          autoComplete="off"
+          name="pix"
+          type="text"
+          className="w-full p-2 border rounded"
+          value={pix}
+          onChange={(e) => setPix(e.target.value)}
+        />
+        {/* add showInRanking checkbox */}
+        <div className="flex w-full align-center items-center gap-2 my-2">
+          <input
+            name="showInRanking"
+            type="checkbox"
+            checked={showInRanking}
+            onChange={(e) => setShowInRanking(e.target.checked)}
+          />
+          <label className="text-sm font-medium text-gray-700">
+            Show in Ranking
+          </label>
+        </div>
+
+        <button
+          onClick={handleChangeCurrentUser}
+          className="mt-3 bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Update
+        </button>
+      </div>
+
       {/* Change Password */}
       <div className="mb-5">
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -98,6 +159,7 @@ const Profile: React.FC = () => {
         </label>
         <div className="relative">
           <input
+            autoComplete="off"
             type={showCurrentPassword ? "text" : "password"}
             className="w-full p-2 border rounded"
             value={currentPassword}
@@ -120,6 +182,7 @@ const Profile: React.FC = () => {
         </label>
         <div className="relative">
           <input
+            autoComplete="off"
             type={showNewPassword ? "text" : "password"}
             className="w-full p-2 border rounded"
             value={newPassword}
