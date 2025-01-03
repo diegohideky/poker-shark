@@ -4,14 +4,13 @@ import { MatchPlayer } from "@entities/MatchPlayer";
 import { authMiddleware } from "@middleware/authMiddleware";
 import { dbMiddleware } from "@middleware/dbMiddleware";
 import { NextApiRequest, NextApiResponse } from "next";
-import dayjs from "dayjs";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { teamId, gameId, unit } = req.query as {
+  const { teamId, gameId, startDate, endDate } = req.query as {
     teamId: string;
     gameId: string;
-    unit: "week" | "month" | "year";
-    amount: string; // numeric string
+    startDate: string;
+    endDate: string;
   };
 
   const repository = dataSource.getRepository(Match);
@@ -25,14 +24,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({
       message: "TeamId and gameId are required parameters.",
     });
-  }
-
-  let startDate = null;
-  let endDate = null;
-
-  if (unit) {
-    startDate = dayjs().startOf(unit).toDate();
-    endDate = dayjs().endOf(unit).toDate();
   }
 
   const lastMatchQuery = repository
