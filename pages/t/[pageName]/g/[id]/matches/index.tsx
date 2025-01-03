@@ -54,7 +54,7 @@ const TeamMatches = ({ team }) => {
   }, [team, queryGameId]);
 
   return (
-    <div className="max-w-4xl md:mx-auto m-5 p-2">
+    <div className="max-w-4xl md:mx-auto m-2 p-2">
       <LoadingOverlay isLoading={isLoading} />
       <div className="flex w-full justify-center gap-6 mb-6">
         {team.photoUrl && (

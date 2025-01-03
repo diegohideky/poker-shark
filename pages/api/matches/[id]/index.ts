@@ -17,6 +17,7 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
     try {
       const match = await matchRepo.findOne({
         where: { id: matchId, deletedAt: null },
+        relations: ["game"],
       });
       if (!match) return res.status(404).json({ error: "Match not found" });
       return res.status(200).json(match);

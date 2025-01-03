@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { z } from "zod";
 import { toast } from "react-toastify";
 import { Game, GameTypes } from "@entities/Game";
+import LoadingOverlay from "@components/LoadingOverlay";
 
 const matchSchema = z.object({
   gameId: z.string().nonempty("Game is required"),
@@ -41,6 +42,7 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
   const [name, setName] = useState<string>(
     `Poker Table ${new Date().toISOString().split("T")[0]}`
   );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Fetch all available games
   useEffect(() => {
@@ -79,6 +81,7 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
   }
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const validatedData = matchSchema.parse({
         gameId,
@@ -100,6 +103,8 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
       } else {
         toast.error("Failed to create match. Please try again.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,6 +114,8 @@ const NewMatchPage: React.FC<TeamProps> = ({ team }) => {
         <title>{team.name} - New Match</title>
         <meta name="description" content={`New Match for ${team.name}`} />
       </Head>
+
+      <LoadingOverlay isLoading={isLoading} />
 
       <div className="bg-white shadow-lg rounded-lg w-full max-w-4xl p-6 sm:p-8">
         {/* Team Info and Navigation */}

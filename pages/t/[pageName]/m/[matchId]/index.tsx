@@ -18,6 +18,7 @@ import { FaTrophy } from "react-icons/fa";
 import { MdAttachMoney } from "react-icons/md";
 import { formatScore } from "@libs/format";
 import LoadingOverlay from "@components/LoadingOverlay";
+import Typography from "@components/Typography";
 
 interface Player {
   id: string;
@@ -122,8 +123,6 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   };
 
   const copyScoreToClipboard = (score: number) => {
-    alert(score);
-    return;
     const copiedScore = Math.abs(score).toString();
     navigator.clipboard.writeText(copiedScore).then(() => {
       showSuccessToast("Score copied to clipboard!");
@@ -224,7 +223,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   const goTo = (path: string) => navigate.push(path);
 
   return (
-    <main className="min-h-screen flex flex-col items-center bg-gray-900 text-gray-50 p-2">
+    <main className="min-h-screen flex flex-col items-center bg-gray-900 text-gray-50 md:mx-auto p-2">
       <Head>
         <title>{team.name} - Match</title>
         <meta name="description" content={`Match Details for ${team.name}`} />
@@ -246,10 +245,19 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
           )}
           <div>
             <h1 className="text-3xl font-bold">{team.name}</h1>
-            {team.description && (
-              <p className="text-gray-400 mt-2">{team.description}</p>
-            )}
           </div>
+        </div>
+
+        <div className="flex justify-between items-center py-4">
+          <Typography variant="body" className="text-white">
+            {match?.game?.nickname}
+          </Typography>
+          <Typography variant="caption" className="text-white italic">
+            {match?.game?.type}
+          </Typography>
+          <Typography variant="highlight" className="text-white">
+            {dayjs(match?.datetime).format("DD/MM/YYYY")}
+          </Typography>
         </div>
 
         <div className="flex justify-end space-x-4 p-2">
