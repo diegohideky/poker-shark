@@ -37,7 +37,13 @@ const LoginPage = () => {
       const result = await login(data.username, data.password);
       setTokenData(result.token);
       await getCurrentUser();
-      router.push("/");
+
+      const redirect = router.query.redirect;
+      if (redirect) {
+        router.push(redirect as string);
+      } else {
+        router.push("/");
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
