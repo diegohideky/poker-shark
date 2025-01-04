@@ -58,12 +58,14 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
       search,
       orderField = "createdAt",
       orderDirection = "ASC",
+      gameId,
     } = query.data;
 
     try {
       const queryBuilder = matchRepo
         .createQueryBuilder("match")
         .where("match.deletedAt IS NULL")
+        .andWhere("match.gameId = :gameId", { gameId })
         .skip(offset)
         .take(limit)
         .orderBy(

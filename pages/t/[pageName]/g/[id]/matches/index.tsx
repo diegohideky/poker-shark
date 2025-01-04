@@ -7,6 +7,7 @@ import { showErrorToast } from "@libs/utils";
 import LoadingOverlay from "@components/LoadingOverlay";
 import { GetServerSideProps } from "next";
 import { getTeamsByPageName } from "@services/teams";
+import { getGameById } from "@services/games";
 
 const LIMIT = 5;
 
@@ -18,6 +19,7 @@ const TeamMatches = ({ team }) => {
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [offset, setOffset] = useState(0);
+  const [game, setGame] = useState(null);
 
   const fetchMatches = useCallback(async () => {
     if (!team || !queryGameId || (total > 0 && matches.length >= total)) return;
@@ -44,12 +46,29 @@ const TeamMatches = ({ team }) => {
     }
   }, [team, queryGameId, offset]);
 
+  const fetchGame = async () => {
+    if (queryGameId) {
+      setIsLoading(true);
+
+      try {
+        const response = await getGameById(queryGameId as string);
+
+        setGame(response);
+      } catch (error) {
+        console.error({ error });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
   useEffect(() => {
     if (team && queryGameId) {
       setMatches([]);
       setOffset(0);
       setTotal(0);
       fetchMatches(); // Initial fetch
+      fetchGame();
     }
   }, [team, queryGameId]);
 
@@ -70,7 +89,10 @@ const TeamMatches = ({ team }) => {
       <h1 className="text-2xl font-bold mb-6 text-center text-white">
         {team?.name}
       </h1>
-      <div className="p-2">
+      <div className="p-2 flex items-center justify-between">
+        <p className="text-sm text-white">
+          {game?.nickname} - {game?.type.split("")[0]}
+        </p>
         <p className="text-sm text-white">Matches: ({total})</p>
       </div>
       {matches.length === 0 && !isLoading ? (

@@ -6,6 +6,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { showErrorToast } from "@libs/utils";
 import { signup } from "@services/accounts";
 import { z } from "zod";
+import LoadingOverlay from "@components/LoadingOverlay";
 
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -26,6 +27,7 @@ const passwordRules = [
 const SignupPage: React.FC = () => {
   const router = useRouter();
 
+  const [loading, setIsLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -44,6 +46,7 @@ const SignupPage: React.FC = () => {
   const passwordValidation = validateRules(password);
 
   const handleSignup = async () => {
+    setIsLoading(true);
     try {
       const validatedData = signupSchema.parse({
         name,
@@ -74,11 +77,14 @@ const SignupPage: React.FC = () => {
       } else {
         showErrorToast((error as any).response.data.message);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <main className="bg-gray-100 min-h-screen flex items-center justify-center">
+      <LoadingOverlay isLoading={loading} />
       <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-8">
         <h1 className="text-2xl font-bold mb-6 text-center">Create Account</h1>
 
