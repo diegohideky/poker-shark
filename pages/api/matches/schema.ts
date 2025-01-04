@@ -22,4 +22,5 @@ export const MatchPaginationSchema = z.object({
   orderField: z.enum(["name", "datetime", "createdAt"]).optional(),
   orderDirection: z.enum(["ASC", "DESC"]).optional(),
   search: z.string().optional(),
+  gameId: z.string().uuid("Invalid game ID").optional(),
 });

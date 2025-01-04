@@ -104,6 +104,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
       : "N/A";
 
     const playerScores = players
+      .filter((player) => !!convertToCents(scores[player.id]))
       .map(
         (player) =>
           `${player.user.name} ${scores[player.id].startsWith("-") ? "" : "+"}${
