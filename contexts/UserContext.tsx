@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { User } from "@entities/User";
 import { getCurrent } from "@services/accounts";
 import React, {
@@ -24,6 +25,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const currentPath = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
@@ -32,12 +34,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
 
-    const isAccountPage = router.pathname.startsWith("/accounts");
-
-    console.log({ isAccountPage });
+    const isAccountPage = currentPath.startsWith("/accounts");
 
     if (!isAccountPage && (!savedToken || !savedUser)) {
-      router.push("/accounts/login");
+      let loginPath = "/accounts/login";
+      if (currentPath && currentPath !== "/") {
+        loginPath += `?redirect=${currentPath}`;
+      }
+
+      router.push(loginPath);
     } else if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
