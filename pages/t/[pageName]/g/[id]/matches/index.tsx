@@ -51,7 +51,7 @@ const TeamMatches = ({ team }) => {
       setIsLoading(true);
 
       try {
-        const response = await getGameById(queryGameId);
+        const response = await getGameById(queryGameId as string);
 
         setGame(response);
       } catch (error) {
