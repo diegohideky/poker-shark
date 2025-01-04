@@ -48,5 +48,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export default dbMiddleware(
-  authMiddleware(authorize(["ADMIN", "TEAM ADMIN"])(handler))
+  authMiddleware(
+    authorize([
+      {
+        role: "ADMIN",
+        methods: ["PUT", "DELETE"],
+      },
+      {
+        role: "TEAM ADMIN",
+        methods: ["PUT", "DELETE"],
+      },
+      {
+        role: "PLAYER",
+        methods: ["DELETE"],
+      },
+    ])(handler)
+  )
 );
