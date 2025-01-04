@@ -9,16 +9,7 @@ import { useUser } from "@contexts/UserContext";
 
 const BottomNavBar = () => {
   const router = useRouter();
-  const { user, setUserData, setTokenData } = useUser();
-
-  const logout = () => {
-    setTokenData(null);
-    setUserData(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    router.push("/accounts/login");
-  };
+  const { user, logout } = useUser();
 
   const navItems = [
     {

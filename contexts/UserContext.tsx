@@ -17,6 +17,7 @@ interface UserContextProps {
   setUserData: (user: User | null) => void;
   setTokenData: (token: string | null) => void;
   getCurrentUser: () => Promise<void>;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -49,6 +50,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
+  const logout = () => {
+    setTokenData(null);
+    setUserData(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    router.push("/accounts/login");
+  };
+
   const setUserData = (user: User | null) => {
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
@@ -60,13 +70,23 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const getCurrentUser = async () => {
-    const current = await getCurrent();
-    setUserData(current);
+    try {
+      const current = await getCurrent();
+      setUserData(current);
+    } catch (error) {
+      logout();
+    }
   };
+
+  useEffect(() => {
+    if (!router.pathname.startsWith("/accounts")) {
+      getCurrentUser();
+    }
+  }, []);
 
   return (
     <UserContext.Provider
-      value={{ user, token, setUserData, setTokenData, getCurrentUser }}
+      value={{ user, token, setUserData, setTokenData, getCurrentUser, logout }}
     >
       {children}
     </UserContext.Provider>

@@ -173,5 +173,20 @@ export async function adjustPlayerPositions(matchId, matchPlayerRepo) {
 }
 
 export default dbMiddleware(
-  authMiddleware(authorize(["ADMIN", "TEAM ADMIN"])(handler))
+  authMiddleware(
+    authorize([
+      {
+        role: "ADMIN",
+        methods: ["GET", "POST"],
+      },
+      {
+        role: "TEAM ADMIN",
+        methods: ["GET", "POST"],
+      },
+      {
+        role: "PLAYER",
+        methods: ["GET"],
+      },
+    ])(handler)
+  )
 );
