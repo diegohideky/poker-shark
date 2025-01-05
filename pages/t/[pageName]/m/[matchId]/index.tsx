@@ -351,8 +351,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                   <div className="flex flex-col justify-center items-center gap-3">
                     <input
                       type="text"
-                      inputMode="text" // Allows for more characters while still opening a usable keyboard
-                      pattern="[0-9,+-]*" // Validates input for numbers, commas, and +/-
+                      inputMode="numeric" // Suggests a numeric-oriented keyboard
                       value={scores[player.id]}
                       onChange={(e) =>
                         handleScoreChange(player.id, e.target.value)
