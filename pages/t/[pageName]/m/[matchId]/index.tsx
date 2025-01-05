@@ -137,10 +137,10 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   };
 
   const handleScoreChange = (playerId: string, inputValue: string) => {
-    let isNegative = false;
-    if (inputValue.startsWith("-")) {
-      isNegative = true;
-      inputValue = inputValue.slice(1);
+    let isNegative = inputValue.includes("-");
+
+    if (inputValue.includes("+")) {
+      isNegative = false; // Remove the negative flag if "+" is present
     }
 
     let onlyNumbers = inputValue.replace(/\D/g, "");
@@ -351,6 +351,8 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                   <div className="flex flex-col justify-center items-center gap-3">
                     <input
                       type="text"
+                      inputMode="decimal" // Allows numeric input with special characters
+                      pattern="[0-9+-]*" // Allows numbers, +, and - characters
                       value={scores[player.id]}
                       onChange={(e) =>
                         handleScoreChange(player.id, e.target.value)
