@@ -351,8 +351,6 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                   <div className="flex flex-col justify-center items-center gap-3">
                     <input
                       type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
                       value={scores[player.id]}
                       onChange={(e) =>
                         handleScoreChange(player.id, e.target.value)
