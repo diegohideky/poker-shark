@@ -9,7 +9,7 @@ import {
   getMatchById,
 } from "@services/matches";
 import Head from "next/head";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Match } from "@entities/Match";
 import { FaClipboard, FaEye, FaPlus, FaPix } from "react-icons/fa6";
@@ -54,6 +54,8 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   const [match, setMatch] = useState<Match | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useRouter();
+  const inputRef = useRef(null);
+  const goodKey = "0123456789+-";
 
   const fetchPlayers = async () => {
     if (team) {
@@ -89,6 +91,36 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
       }
     }
   };
+
+  useEffect(() => {
+    const inputEl = inputRef.current;
+
+    if (!inputEl) return; // Ensure the element exists before proceeding
+
+    const filterInput = (val) => goodKey.indexOf(val) > -1;
+
+    const checkInputTel = (e) => {
+      const key = typeof e.which === "number" ? e.which : e.keyCode;
+      const start = inputEl.selectionStart;
+      const end = inputEl.selectionEnd;
+
+      // Filter invalid characters
+      const filtered = inputEl.value.split("").filter(filterInput);
+      inputEl.value = filtered.join("");
+
+      // Prevent pointer movement for bad characters
+      const move =
+        filterInput(String.fromCharCode(key)) || key === 0 || key === 8 ? 0 : 1;
+      inputEl.setSelectionRange(start - move, end - move);
+    };
+
+    inputEl.addEventListener("input", checkInputTel);
+
+    // Cleanup listener on component unmount
+    return () => {
+      inputEl.removeEventListener("input", checkInputTel);
+    };
+  }, []);
 
   useEffect(() => {
     fetchPlayers();
@@ -351,6 +383,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                   <div className="flex flex-col justify-center items-center gap-3">
                     <input
                       type="text"
+                      ref={inputRef}
                       value={scores[player.id]}
                       onChange={(e) =>
                         handleScoreChange(player.id, e.target.value)
