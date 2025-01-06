@@ -9,7 +9,7 @@ import {
   getMatchById,
 } from "@services/matches";
 import Head from "next/head";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Match } from "@entities/Match";
 import { FaClipboard, FaEye, FaPlus, FaPix } from "react-icons/fa6";
@@ -54,7 +54,6 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
   const [match, setMatch] = useState<Match | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useRouter();
-  const inputRef = useRef(null);
   const goodKey = "0123456789+-";
 
   const fetchPlayers = async () => {
@@ -92,10 +91,8 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
     }
   };
 
-  useEffect(() => {
-    const inputEl = inputRef.current;
-
-    if (!inputEl) return; // Ensure the element exists before proceeding
+  const attachEventListener = useCallback((inputEl) => {
+    if (!inputEl) return; // Skip if no element
 
     const filterInput = (val) => goodKey.indexOf(val) > -1;
 
@@ -116,7 +113,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
 
     inputEl.addEventListener("input", checkInputTel);
 
-    // Cleanup listener on component unmount
+    // Cleanup on component unmount
     return () => {
       inputEl.removeEventListener("input", checkInputTel);
     };
@@ -383,7 +380,7 @@ const MatchPage: React.FC<TeamProps> = ({ team, matchId, gameType }) => {
                   <div className="flex flex-col justify-center items-center gap-3">
                     <input
                       type="text"
-                      ref={inputRef}
+                      ref={attachEventListener}
                       value={scores[player.id]}
                       onChange={(e) =>
                         handleScoreChange(player.id, e.target.value)
