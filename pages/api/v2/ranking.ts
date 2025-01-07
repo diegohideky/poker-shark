@@ -75,7 +75,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     .innerJoin("m.game", "g")
     .innerJoin("mp.user", "u")
     .where("m.teamId = :teamId", { teamId })
-    .andWhere("m.gameId = :gameId", { gameId });
+    .andWhere("m.gameId = :gameId", { gameId })
+    .andWhere("u.showInRanking IS TRUE");
 
   if (startDate) {
     currentRankingQuery.andWhere("m.datetime >= :startDate", { startDate });
@@ -100,7 +101,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     .innerJoin("m.game", "g")
     .innerJoin("mp.user", "u")
     .where("m.teamId = :teamId", { teamId })
-    .andWhere("m.gameId = :gameId", { gameId });
+    .andWhere("m.gameId = :gameId", { gameId })
+    .andWhere("u.showInRanking IS TRUE");
 
   if (startDate) {
     previousRankingQuery.andWhere("m.datetime >= :startDate", { startDate });
