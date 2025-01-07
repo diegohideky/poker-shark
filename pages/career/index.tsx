@@ -70,13 +70,13 @@ const CareerPage = () => {
   };
 
   const chartData = {
-    labels: history.map((match) =>
-      dayjs(match.match.datetime).format("DD/MM/YY")
-    ),
+    labels: history
+      .reverse()
+      .map((match) => dayjs(match.match.datetime).format("DD/MM/YY")),
     datasets: [
       {
         label: "Score Over Time",
-        data: history.map((match) => match.score / 100),
+        data: history.reverse().map((match) => match.score / 100),
         borderColor: "rgb(34, 197, 94, 0.2)",
         backgroundColor: "rgba(37, 99, 235, 0.2)",
         fill: true,
