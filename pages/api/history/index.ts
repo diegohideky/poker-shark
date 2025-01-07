@@ -30,7 +30,7 @@ async function handler(req: UserNextApiRequest, res: NextApiResponse) {
     }
 
     query
-      .orderBy("match.datetime", "DESC")
+      .orderBy("match.datetime", "ASC")
       .skip(Number(offset))
       .take(Number(limit));
 
