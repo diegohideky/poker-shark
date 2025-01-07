@@ -45,7 +45,7 @@ export default function Home({ team }): React.FC<TeamProps> {
   const [caixinha, setCaixinha] = useState(0);
   const [filteredRanking, setFilteredRanking] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedUnit, setSelectedUnit] = useState<string>("week");
+  const [selectedUnit, setSelectedUnit] = useState<string>("month");
   const [game, setGame] = useState(null);
 
   const adjustDateRange = (direction) => {
