@@ -62,15 +62,15 @@ export default dbMiddleware(
     authorize([
       {
         role: "ADMIN",
-        methods: ["GET", "POST"],
+        methods: ["PATCH"],
       },
       {
         role: "TEAM ADMIN",
-        methods: ["GET", "POST"],
+        methods: ["PATCH"],
       },
       {
         role: "PLAYER",
-        methods: ["GET", "POST"],
+        methods: ["PATCH"],
       },
     ])(handler)
   )
